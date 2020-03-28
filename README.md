@@ -1,7 +1,7 @@
 
 ![QuickLook icon](https://user-images.githubusercontent.com/1687847/29485863-8cd61b7c-84e2-11e7-97d5-eacc2ba10d28.png)
 
-### 自改3.6.5
+### 自改3.6.6
 
 QuickLook 项目
 - edit "TrayIconManager.cs"
