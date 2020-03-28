@@ -27,6 +27,7 @@
                     Name="QuickLook"
                     Description="QuickLook lets you preview any file by pressing the space bar."
                     Target="[INSTALLFOLDER]QuickLook.exe"
+                    Arguments="/setvisible"
                     WorkingDirectory="INSTALLFOLDER" />
           <RemoveFolder Id="ProgramMenuFolder" On="uninstall" />
           <RegistryValue
@@ -44,6 +45,7 @@
                     Name="QuickLook"
                     Description="QuickLook lets you preview any file by pressing the space bar."
                     Target="[INSTALLFOLDER]QuickLook.exe"
+                    Arguments="/setvisible"
                     WorkingDirectory="INSTALLFOLDER" />
           <RemoveFolder Id="DesktopFolder" On="uninstall" />
           <RegistryValue

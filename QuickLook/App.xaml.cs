@@ -37,7 +37,11 @@ namespace QuickLook
         public static readonly string UserPluginPath = Path.Combine(SettingHelper.LocalDataPath, "QuickLook.Plugin\\");
         public static readonly string AppFullPath = Assembly.GetExecutingAssembly().Location;
         public static readonly string AppPath = Path.GetDirectoryName(AppFullPath);
-        public static readonly bool Is64Bit = Environment.Is64BitProcess;
+
+        //comment by gh
+        //public static readonly bool Is64Bit = Environment.Is64BitProcess;
+        //-----------//
+
         public static readonly bool IsUWP = ProcessHelper.IsRunningAsUWP();
         public static readonly bool IsWin10 = Environment.OSVersion.Version >= new Version(10, 0);
         public static readonly bool IsGPUInBlacklist = SystemHelper.IsGPUInBlacklist();
@@ -72,6 +76,16 @@ namespace QuickLook
                 // second instance: preview this file
                 if (e.Args.Any() && (Directory.Exists(e.Args.First()) || File.Exists(e.Args.First())))
                     RemoteCallShowPreview(e);
+
+                //add by gh
+                else if (e.Args.Contains("/setvisible"))
+                {
+                    SettingHelper.Set("Visible", true);
+                    MessageBox.Show(TranslationHelper.Get("APP_SECOND_TEXT_HIDE"), TranslationHelper.Get("APP_SECOND"),
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                //---------//
+
                 // second instance: duplicate
                 else
                     MessageBox.Show(TranslationHelper.Get("APP_SECOND_TEXT"), TranslationHelper.Get("APP_SECOND"),
@@ -80,8 +94,11 @@ namespace QuickLook
                 Shutdown();
                 return;
             }
-            
-            CheckUpdate();
+
+            //comment by gh - 不自动check update
+            //CheckUpdate();
+            //----------//
+
             RunListener(e);
 
             // first instance: run and preview this file
@@ -89,6 +106,8 @@ namespace QuickLook
                 RemoteCallShowPreview(e);
         }
 
+
+        /* comment by gh
         private void CheckUpdate()
         {
             if (DateTime.Now.Ticks - SettingHelper.Get<long>("LastUpdateTicks") < TimeSpan.FromDays(7).Ticks)
@@ -97,6 +116,7 @@ namespace QuickLook
             Task.Delay(120 * 1000).ContinueWith(_ => Updater.CheckForUpdates(true));
             SettingHelper.Set("LastUpdateTicks", DateTime.Now.Ticks);
         }
+        *///----------//
 
         private void RemoteCallShowPreview(StartupEventArgs e)
         {
@@ -105,11 +125,38 @@ namespace QuickLook
 
         private void RunListener(StartupEventArgs e)
         {
-            TrayIconManager.GetInstance();
-            if (!e.Args.Contains("/autorun") && !IsUWP)
-                TrayIconManager.ShowNotification("", TranslationHelper.Get("APP_START"));
+
+            //comment by gh - 启动不显示启动提示
+            //TrayIconManager.GetInstance();
+            //if (!e.Args.Contains("/autorun") && !IsUWP)
+            //TrayIconManager.ShowNotification("", TranslationHelper.Get("APP_START"));
+            //if (e.Args.Contains("/first"))
+            //AutoStartupHelper.CreateAutorunShortcut();
+            //----------//
+
+            //add by gh - 自动启动隐藏后台图标
+            if (SettingHelper.Get("Visible", true))
+            {
+                TrayIconManager.GetInstance();
+                if (!e.Args.Contains("/autorun") && !IsUWP)
+                    TrayIconManager.ShowNotification("", TranslationHelper.Get("APP_START"));
+            }
+            else if (e.Args.Contains("/setvisible"))
+            {
+                SettingHelper.Set("Visible", true);
+                TrayIconManager.GetInstance();
+                if (!IsUWP)
+                    TrayIconManager.ShowNotification("", TranslationHelper.Get("APP_START"));
+            }
+            //自己添加的功能，与quick look无关
+            DesktopWatcher.GetInstance();
+            
             if (e.Args.Contains("/first"))
+            {
                 AutoStartupHelper.CreateAutorunShortcut();
+                SettingHelper.Set("Visible", true);
+            }
+            //----------//
 
             NativeMethods.QuickLook.Init();
 
@@ -127,7 +174,18 @@ namespace QuickLook
             _isRunning.ReleaseMutex();
 
             PipeServerManager.GetInstance().Dispose();
-            TrayIconManager.GetInstance().Dispose();
+
+            //add by gh - 自动启动隐藏后台图标
+            if (SettingHelper.Get("Visible", true))
+            {
+                TrayIconManager.GetInstance().Dispose();
+            }
+            //----------//
+
+            //comment by gh
+            //TrayIconManager.GetInstance().Dispose();
+            //----------//
+
             BackgroundListener.GetInstance().Dispose();
             ViewWindowManager.GetInstance().Dispose();
         }

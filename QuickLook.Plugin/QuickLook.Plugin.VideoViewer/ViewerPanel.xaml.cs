@@ -30,6 +30,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using MediaInfo;
 using QuickLook.Common.Annotations;
+using QuickLook.Common.ExtensionMethods;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using WPFMediaKit.DirectShow.Controls;
@@ -59,8 +60,11 @@ namespace QuickLook.Plugin.VideoViewer
 
             _context = context;
 
-            mediaElement.MediaUriPlayer.LAVFilterDirectory =
-                IntPtr.Size == 8 ? "LAVFilters-0.72-x64\\" : "LAVFilters-0.72-x86\\";
+            //edit by gh
+            mediaElement.MediaUriPlayer.LAVFilterDirectory = "LAVFilters-0.74.1-x64";
+            //mediaElement.MediaUriPlayer.LAVFilterDirectory =
+                //IntPtr.Size == 8 ? "LAVFilters-0.72-x64\\" : "LAVFilters-0.72-x86\\";
+            //--------------//
 
             //ShowViedoControlContainer(null, null);
             viewerPanel.PreviewMouseMove += ShowViedoControlContainer;
@@ -259,17 +263,34 @@ namespace QuickLook.Plugin.VideoViewer
                 metaArtists.Text = artist;
                 metaAlbum.Text = album;
 
+                //add by gh - 缩略图，改进mediainfo在mp3有两张缩略图时不能显示问题
+                var scale = DpiHelper.GetCurrentScaleFactor();
+                var icon =
+                    WindowsThumbnailExtension.GetThumbnail(path,
+                        (int)(800 * scale.Horizontal),
+                        (int)(800 * scale.Vertical),
+                        ThumbnailOptions.ScaleUp);
+                
+                CoverArt = icon?.ToBitmapSource();
+                icon?.Dispose();
+                //---------//
+
+                //comment by gh
+                /*
                 var cs = info.Get(StreamKind.General, 0, "Cover_Data");
                 if (!string.IsNullOrEmpty(cs))
                     using (var ms = new MemoryStream(Convert.FromBase64String(cs)))
                     {
-                        CoverArt = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                        CoverArt = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.None);
                     }
+                *///-------------//
             }
             catch (Exception)
             {
-                metaTitle.Text = Path.GetFileName(path);
-                metaArtists.Text = metaAlbum.Text = string.Empty;
+                //comment by gh
+                //metaTitle.Text = Path.GetFileName(path);
+                //metaArtists.Text = metaAlbum.Text = string.Empty;
+                //---------//
             }
 
             metaArtists.Visibility = string.IsNullOrEmpty(metaArtists.Text)

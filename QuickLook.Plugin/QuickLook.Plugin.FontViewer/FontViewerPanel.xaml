@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="QuickLook.Plugin.FontViewer.FontViewerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:QuickLook.Plugin.FontViewer"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/QuickLook.Common;component/Styles/MainWindowStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="30" Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <RichTextBox Name="RichTBDetails" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,10" Grid.Row="0" Grid.Column="0"  BorderThickness="0"  Background="#33C1C1C1" IsEnabled="False">
+            <FlowDocument>
+            </FlowDocument>
+        </RichTextBox>
+        <RichTextBox Name="RichTB" Grid.Column="0" Grid.Row="5" BorderThickness="0" Padding="5,10,5,10" ScrollViewer.CanContentScroll="True" Background="Transparent">
+            
+            <FlowDocument>
+            </FlowDocument>
+        </RichTextBox>
+
+    </Grid>
+</UserControl>

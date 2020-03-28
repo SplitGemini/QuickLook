@@ -41,6 +41,18 @@ namespace QuickLook
                         AutoStartupHelper.CreateAutorunShortcut();
                 }) {Enabled = !App.IsUWP};
 
+        //add by gh
+        private readonly MenuItem _visible =
+            new MenuItem(TranslationHelper.Get("Icon_VisibleLabel"),
+                (sender, e) =>
+                {
+                    SettingHelper.Set("Visible", false);
+                    ShowNotification(TranslationHelper.Get("Icon_HideMessageTitle"), TranslationHelper.Get("Icon_HideMessage"));
+                    GetInstance().Dispose();
+                })
+            { Enabled = true };
+        //----------//
+
         private TrayIconManager()
         {
             _icon = new NotifyIcon
@@ -51,12 +63,26 @@ namespace QuickLook
                 Visible = true,
                 ContextMenu = new ContextMenu(new[]
                 {
-                    new MenuItem($"v{Application.ProductVersion}{(App.IsUWP ? " (UWP)" : "")}") {Enabled = false},
+                    //comment by gh
+                    //new MenuItem($"v{Application.ProductVersion}{(App.IsUWP ? " (UWP)" : "")}") {Enabled = false},
+                    //----------//
+
+                    //add by gh
+                    new MenuItem($"v{Application.ProductVersion}{(App.IsUWP ? " (UWP)" : "")}",
+                                (sender, e) => {  ShowNotification(TranslationHelper.Get("Icon_VersionMessageTitle"),
+                                                  string.Format(TranslationHelper.Get("Icon_VersionMessage"), Application.ProductVersion));}),
+                    //----------//
+
                     new MenuItem("-"),
                     new MenuItem(TranslationHelper.Get("Icon_CheckUpdate"), (sender, e) => Updater.CheckForUpdates()),
                     new MenuItem(TranslationHelper.Get("Icon_GetPlugin"),
                         (sender, e) => Process.Start("https://github.com/QL-Win/QuickLook/wiki/Available-Plugins")),
                     _itemAutorun,
+
+                    //add by gh - 添加隐藏选项
+                    _visible,
+                    //----------//
+
                     new MenuItem(TranslationHelper.Get("Icon_Quit"),
                         (sender, e) => System.Windows.Application.Current.Shutdown())
                 })

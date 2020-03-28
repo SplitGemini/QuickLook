@@ -229,11 +229,14 @@ namespace QuickLook.Plugin.PDFViewer
                     });
 
                     if (tempHandle.PageCount > 1)
-                        size.Width += /*listThumbnails.ActualWidth*/ 150;
+                    {
+                        size.Width += /*listThumbnails.ActualWidth 150*/ 150;
+                    }
+
                 }
             }
-
-            return new Size(size.Width * 3, size.Height * 3);
+            
+            return new Size(size.Width * 3, size.Height * 3.5);
         }
 
         public void LoadPdf(string path)

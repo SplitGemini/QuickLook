@@ -1,6 +1,70 @@
 
 ![QuickLook icon](https://user-images.githubusercontent.com/1687847/29485863-8cd61b7c-84e2-11e7-97d5-eacc2ba10d28.png)
 
+### 自改3.6.5
+
+QuickLook 项目
+- edit "TrayIconManager.cs"
+- edit "App.xaml.cs"
+- edit "NativeMethods.Quicklook.cs"
+- edit "PipeServerManager.cs"
+- add "DesktopWatcher.cs"
+- edit NativeMethod/QuickLook.cs
+
+QuickLook.Plugin - VideoViewer
+- edit "ViewPanel.xaml.cs"
+- edit "Plugin.cs"
+- add "WindowsThumbnailProvider.cs"
+- update LavFilters 0.72 to 0.74.1 and remove 32 bit version
+- remove 32 bit version Mediainfo
+
+QuickLook.Plugin - ImageViewer
+- edit "Plugin.cs"
+- update Nconvert and its plugin to 64 bit and the newest version
+
+QuickLook.Installer
+- Product.wxs
+
+QuickLook.Plugin - FontViewer
+- edit "FontViewerPanel.xaml.cs"
+- edit "Plugin.cs"
+
+QuickLook.Plugin - MarkdownViewer
+- edit "Plugin.cs"
+
+QuickLook.Plugin - OfficeViewer-Native
+- edit "Plugin.cs"
+
+remove QuickLook.Native - QuickLook.Native32 project
+
+remove QuickLook.Native - QuickLook.WoW64HookHelper project
+
+QuickLook.Native - QuickLook.Native64
+- edit lots of files
+
+QuickLook.Common
+- add "ExtensionMethod/WindowsThumbnailExtension.cs"
+- remove [QuickLook.Plugin - VideoViewer] "WindowsThumbnailProvider.cs", and use the same method from here
+- remove [QuickLook] Plugin/"WindowsThumbnailProvider.cs" too, and use the same method from here
+
+QuickLook.Plugin - PdfViewer
+- edit "Plugin.cs"
+- remove 32 bit 
+
+改进：
+1. 后台任务栏图标添加隐藏选项，选择隐藏后之后不会显示后台图标，加启动参数"/setvisible"后再次启动恢复，安装包自动增加的桌面和开始菜单快捷方式默认带"/setvisible"参数
+1. 修复预览.lnk快捷方式BUG
+1. 修复当预览有多张封面的mp3时无法预览问题,音频封面预览问题
+1. VideoViewer增加rmvb格式预览
+1. ImageViewer增加dds,tga格式预览
+1. 将外部插件整合进解决方案里，包括FontViewer,EpubViewer,OfficeViewer-Native
+1. 修改插件界面大小：FontViewer，OfficeViewer-Native，MarkdownViewer,PdfViewer,ImageViewer
+1. 修改FontViewer样例显示内容
+1. QuickLook项目添加监控桌面文件夹功能，作用是把公用桌面文件全部移动到用户桌面中
+1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化
+1. 将之前在VideoViewer添加的预览缩略图文件"WindowsThumbnailProvider.cs"移动在QuickLook.Common中并改名为"WindowsThumbnailExtension.cs"，并删除QuickLook原有的文件
+1. ImageViewer读取不出heif图片大小时使用系统方法
+
 # QuickLook
 
 [![license](https://img.shields.io/github/license/QL-Win/QuickLook.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
@@ -13,9 +77,9 @@
 <img src="https://user-images.githubusercontent.com/1687847/64730506-2a60d100-d4e8-11e9-95a6-f13dbd869b2a.jpeg" width="400">
 
 ## Background
-One of the few features I missed from macOS is [Quick Look](https://en.wikipedia.org/wiki/Quick_Look). It allows users to peek into a file content in lightning speed by just pressing the <kbd>Space</kbd> key. Windows, on the other hand, does not have this handy feature ... until now.
+One of the few features I missed from macOS is [Quick Look](https://en.wikipedia.org/wiki/Quick_Look). It allows user peek into a file content in lightning speed by just pressing the <kbd>Space</kbd> key. Windows, on the other hand, does not have this handy feature ... until now.
 
-I am aware that several alternatives are already available on the Internet (e.g. [WinQuickLook](https://github.com/shibayan/WinQuickLook) and [Seer](https://github.com/ccseer/Seer)). Despite these options, I still decided to craft another one by myself, because they are either not being actively developed, lack of variety, or ask for some :dollar:.
+I am aware that several alternatives are already available on the Internet (e.g. [WinQuickLook](https://github.com/shibayan/WinQuickLook) and [Seer](https://github.com/ccseer/Seer)). Despite these options, I still decided to craft another one by myself, because they are either not being actively developed, lack of variety, or ask for an amount of $$$.
 
 ## Highlights
 
@@ -34,13 +98,11 @@ I am aware that several alternatives are already available on the Internet (e.g.
 
 Get it from one of the following sources:
 
-  * Microsoft Store (Windows 10 users only, no preview in open/save-dialogs available) <a href="https://www.microsoft.com/store/apps/9nv4bs3l1h4s?ocid=badge" target="_blank"><img src="https://assets.windowsphone.com/13484911-a6ab-4170-8b7e-795c1e8b4165/English_get_L_InvariantCulture_Default.png" height="22px" alt="Store Link" /></a> 
+  * Microsoft Store (Windows 10 users only) <a href="https://www.microsoft.com/store/apps/9nv4bs3l1h4s?ocid=badge" target="_blank"><img src="https://assets.windowsphone.com/13484911-a6ab-4170-8b7e-795c1e8b4165/English_get_L_InvariantCulture_Default.png" height="22px" alt="Store Link" /></a> 
   * Installer or portable archive of the stable version from [GitHub Release](https://github.com/QL-Win/QuickLook/releases) 
   * Nightly builds from [AppVeyor](https://ci.appveyor.com/project/xupefei/quicklook/build/artifacts)
 
 [What are the differences between `.msi`, `.zip`, Nightly and Store versions?](https://github.com/QL-Win/QuickLook/wiki/Differences-Between-Distributions)
-
-**Note:** Don't forget to check out the [plugins](https://github.com/QL-Win/QuickLook/wiki/Available-Plugins) for previewing office-files, epubs, fonts and more!
 
 
 ### Typical usecase
@@ -58,8 +120,7 @@ Get it from one of the following sources:
  - <kbd>Esc</kbd> Hide the preview window
  - <kbd>Enter</kbd> Open/Execute current file
  - <kbd>Mouse</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> Preview another file
- - <kbd>Mouse Wheel</kbd> Zoom in/out (images)
- - <kbd>Ctrl</kbd>+<kbd>Mouse Wheel</kbd> Zoom in/out (PDFs)
+ - <kbd>Ctrl</kbd>+<kbd>Wheel</kbd> Zoom in/out (images & pdf)
  - <kbd>Wheel</kbd> Increase/decrease volume
 
 ## Supported file types, file manager intergation, etc.
@@ -75,7 +136,7 @@ See the [Translation guide](https://github.com/QL-Win/QuickLook/wiki/Translation
  - Many [open-source projects](https://github.com/QL-Win/QuickLook/wiki/On-the-Shoulders-of-Giants) and their contributors
  - Our UI designers [@OiCkilL](https://twitter.com/OiCkilL) (“Fluent” user interface since v0.3) and [@QubitsDev](https://twitter.com/qubitsdev) (application icon since v0.3)
  - [Our contributers](https://github.com/QL-Win/QuickLook/graphs/contributors) who
-     - teach QuickLook to speak *your* language
+     - teach QuickLook speaks *your* language
      - send pull requests, report bugs or give suggestions
  - ... and you 😊
 

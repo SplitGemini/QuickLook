@@ -43,7 +43,10 @@ namespace QuickLook.Plugin.MarkdownViewer
 
         public void Prepare(string path, ContextObject context)
         {
-            context.PreferredSize = new Size(1000, 600);
+            //comment by gh - I need larger size
+            //context.PreferredSize = new Size(1000, 600);
+            //----------------
+            context.PreferredSize = new Size(1200, 800);
         }
 
         public void View(string path, ContextObject context)

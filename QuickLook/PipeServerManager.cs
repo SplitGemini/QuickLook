@@ -125,8 +125,10 @@ namespace QuickLook
             var wParam = msg.Substring(0, split);
             var lParam = msg.Substring(split + 1, msg.Length - split - 1);
 
-            if (!string.IsNullOrEmpty(lParam))
-                lParam = ResolveShortcut(lParam);
+            //comment by gh
+            //if (!string.IsNullOrEmpty(lParam))
+            //lParam = ResolveShortcut(lParam);
+            //-------------//
 
             switch (wParam)
             {
@@ -174,9 +176,12 @@ namespace QuickLook
 
         public static string ResolveShortcut(string filename)
         {
+            //add by gh
+            if (String.IsNullOrEmpty(filename)) return filename;
+            //---------//
+
             if (Path.GetExtension(filename).ToLower() != ".lnk")
                 return filename;
-
             var link = new ShellLink();
             ((IPersistFile) link).Load(filename, 0);
             var sb = new StringBuilder(260);

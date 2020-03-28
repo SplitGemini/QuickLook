@@ -29,9 +29,9 @@ namespace QuickLook.Plugin.VideoViewer
     {
         private static readonly string[] Formats =
         {
-            // video
+            // video - add rmvb
             ".3g2", ".3gp", ".3gp2", ".3gpp", ".amv", ".asf", ".asf", ".avi", ".flv", ".mts", ".m2ts", ".m4v", ".mkv",
-            ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",
+            ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",".rmvb",
             // audio
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aif", ".aiff", ".amr", ".ape", ".au", ".awb", ".dct", ".dss", ".dvf",
             ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".m4r", ".mmf", ".mp3", ".mpc", ".msv", ".ogg",
@@ -61,10 +61,16 @@ namespace QuickLook.Plugin.VideoViewer
 
             try
             {
-                _mediaInfo = new MediaInfo.MediaInfo(Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    Environment.Is64BitProcess ? "MediaInfo-x64\\" : "MediaInfo-x86\\"));
-                _mediaInfo.Option("Cover_Data", "base64");
+                //editby gh
+                _mediaInfo = new MediaInfo.MediaInfo(Assembly.GetExecutingAssembly().Location);
+                //_mediaInfo = new MediaInfo.MediaInfo(Path.Combine(
+                    //Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    //Environment.Is64BitProcess ? "MediaInfo-x64\\" : "MediaInfo-x86\\"));
+                //----------//
+
+                //-----comment by gh---
+                //_mediaInfo.Option("Cover_Data", "base64");
+                //---------------------
 
                 _mediaInfo.Open(path);
 

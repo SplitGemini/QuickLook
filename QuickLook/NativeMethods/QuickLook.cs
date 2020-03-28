@@ -27,6 +27,8 @@ namespace QuickLook.NativeMethods
     {
         private const int MaxPath = 8192;
 
+        //comment by gh
+        /*
         [DllImport("QuickLook.Native32.dll", EntryPoint = "Init",
             CallingConvention = CallingConvention.Cdecl)]
         private static extern void Init_32();
@@ -38,6 +40,7 @@ namespace QuickLook.NativeMethods
         [DllImport("QuickLook.Native32.dll", EntryPoint = "GetCurrentSelection",
             CallingConvention = CallingConvention.Cdecl)]
         private static extern void GetCurrentSelectionNative_32([MarshalAs(UnmanagedType.LPWStr)] StringBuilder sb);
+        *///---------------//
 
         [DllImport("QuickLook.Native64.dll", EntryPoint = "Init",
             CallingConvention = CallingConvention.Cdecl)]
@@ -55,10 +58,16 @@ namespace QuickLook.NativeMethods
         {
             try
             {
+                //edit by gh
+                Init_64();
+                /*
                 if (App.Is64Bit)
                     Init_64();
                 else
                     Init_32();
+                 */
+                //---------------//
+
             }
             catch (Exception e)
             {
@@ -70,7 +79,12 @@ namespace QuickLook.NativeMethods
         {
             try
             {
-                return App.Is64Bit ? GetFocusedWindowTypeNative_64() : GetFocusedWindowTypeNative_32();
+
+                //edit by gh
+                return GetFocusedWindowTypeNative_64();
+                //return App.Is64Bit ? GetFocusedWindowTypeNative_64() : GetFocusedWindowTypeNative_32();
+                //-------------//
+
             }
             catch (Exception e)
             {
@@ -88,16 +102,28 @@ namespace QuickLook.NativeMethods
                 Task.Run(() =>
                 {
                     sb = new StringBuilder(MaxPath);
+
+                    //edit by gh
+                    GetCurrentSelectionNative_64(sb);
+                    /*
                     if (App.Is64Bit)
                         GetCurrentSelectionNative_64(sb);
                     else
                         GetCurrentSelectionNative_32(sb);
+                    */
+                    //---------//
+
                 }).Wait();
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
             }
+
+            //add by gh
+            var str = sb.ToString();
+            sb = new StringBuilder(PipeServerManager.ResolveShortcut(str));
+            //-----------//
 
             return sb?.ToString() ?? string.Empty;
         }

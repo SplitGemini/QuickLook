@@ -52,12 +52,18 @@ namespace QuickLook.Plugin.InfoPanel
             {
                 var scale = DpiHelper.GetCurrentScaleFactor();
 
+                
                 var icon =
-                    WindowsThumbnailProvider.GetThumbnail(path,
+
+                    //edit by gh
+                    //WindowsThumbnailProvider.GetThumbnail(path,
+                    WindowsThumbnailExtension.GetThumbnail(path,
+                    //------------//
+
                         (int) (128 * scale.Horizontal),
                         (int) (128 * scale.Vertical),
                         ThumbnailOptions.ScaleUp);
-
+                
                 var source = icon?.ToBitmapSource();
                 icon?.Dispose();
 

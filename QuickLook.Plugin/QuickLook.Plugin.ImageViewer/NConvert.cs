@@ -82,7 +82,18 @@ namespace QuickLook.Plugin.ImageViewer
             int.TryParse(hs, out var h);
 
             if (w == 0 || h == 0)
-                return Size.Empty;
+            //edit by gh
+                //return Size.Empty;
+            {
+                using (FileStream fs = new FileStream(_path, FileMode.Open, FileAccess.Read))
+                {
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+                    w = image.Width;
+                    h = image.Height;
+                }
+            }
+            //--------------//
+                
 
             switch (GetOrientation())
             {

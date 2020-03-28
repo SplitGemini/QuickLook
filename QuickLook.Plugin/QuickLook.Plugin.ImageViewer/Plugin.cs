@@ -30,10 +30,10 @@ namespace QuickLook.Plugin.ImageViewer
     {
         private static readonly string[] Formats =
         {
-            // camera raw
+            // camera raw ,add dds,tga ;add by gh
             ".ari", ".arw", ".bay", ".crw", ".cr2", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".fff",
             ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
-            ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f",
+            ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f",".dds",".tga",
             // normal
             ".bmp",".heic", ".heif", ".ico", ".icon", ".jpg", ".jpeg", ".psd", ".wdp", ".tif", ".tiff", ".tga", ".webp", ".pbm",
             ".pgm", ".ppm", ".pnm",
@@ -73,7 +73,10 @@ namespace QuickLook.Plugin.ImageViewer
             var size = _meta.GetSize();
 
             if (!size.IsEmpty)
-                context.SetPreferredSizeFit(size, 0.8);
+                //edit by gh
+                //context.SetPreferredSizeFit(size, 0.8);
+                context.SetPreferredSizeFit(size, 0.95);
+                //--------------------//
             else
                 context.PreferredSize = new Size(800, 600);
 

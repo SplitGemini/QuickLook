@@ -36,17 +36,46 @@
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
-  <PropertyGroup>
-    <PostBuildEvent>powershell -file "$(SolutionDir)Scripts\rename-msi.ps1"
-
-powershell -file "$(SolutionDir)Scripts\pack-zip.ps1"</PostBuildEvent>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <SuppressPdbOutput>True</SuppressPdbOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>PackageDir=$(SolutionDir)Build\Package\</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug</DefineConstants>
+    <SuppressPdbOutput>True</SuppressPdbOutput>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineConstants>PackageDir=$(SolutionDir)Build\Package\</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rmdir /S /Q "$(SolutionDir)Build\Package"
-
+mkdir "$(SolutionDir)Build\Package"
 robocopy "$(SolutionDir)Build\$(Configuration)" "$(SolutionDir)Build\Package" %2a.%2a /e /njh /njs /ndl /nfl /nc /ns /np /xf %2a.pdb /xf %2a.obj /xf %2a.ipdb /xf %2a.iobj /xf %2a.exp /xf %2a.lib /xf %2a.ilk /xf %2a.xml
-
 "$(WIX)bin\heat" dir "$(SolutionDir)Build\Package" -dr INSTALLFOLDER -cg QuickLookComponents -gg -g1 -sf -srd -sreg -var "var.PackageDir" -out "$(ProjectDir)C_QuickLookComponents.wxs"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>powershell -file "$(SolutionDir)Scripts\rename-msi.ps1"
+powershell -file "$(SolutionDir)Scripts\pack-zip.ps1"
+rmdir /S /Q "$(SolutionDir)Build\Package"</PostBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

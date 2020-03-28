@@ -20,6 +20,7 @@ using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Windows.Threading;
+using System.Windows;
 using QuickLook.Common.Plugin;
 
 namespace QuickLook.Plugin.PDFViewer
@@ -55,9 +56,12 @@ namespace QuickLook.Plugin.PDFViewer
             _context = context;
             _path = path;
 
-            var desiredSize = PdfViewerControl.GetDesiredControlSizeByFirstPage(path);
+            //edit by gh
+            //var desiredSize = PdfViewerControl.GetDesiredControlSizeByFirstPage(path);
+            //context.SetPreferredSizeFit(desiredSize, 0.8);
+            context.PreferredSize = new Size { Width = 1000, Height = 800 };
+            //-------------//
 
-            context.SetPreferredSizeFit(desiredSize, 0.8);
         }
 
         public void View(string path, ContextObject context)

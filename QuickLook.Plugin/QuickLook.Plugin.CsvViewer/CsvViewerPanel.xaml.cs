@@ -46,8 +46,12 @@ namespace QuickLook.Plugin.CsvViewer
 
             using (var sr = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
-                var conf = new CsvHelper.Configuration.Configuration() {MissingFieldFound = null, BadDataFound = null};
 
+                //edit by gh
+                //var conf = new CsvHelper.Configuration.Configuration() {MissingFieldFound = null, BadDataFound = null};
+                var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null};
+                //-------------------//
+               
                 using (var parser = new CsvParser(sr, conf))
                 {
                     var i = 0;
