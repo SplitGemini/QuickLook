@@ -52,14 +52,22 @@ namespace QuickLook
                 })
             { Enabled = true };
         //----------//
+
         //add by gh
-        private readonly MenuItem _watch =
-            new MenuItem(TranslationHelper.Get("Icon_VisibleLabel"),
+        private readonly MenuItem _watcher =
+            new MenuItem(TranslationHelper.Get("Icon_WatcherLabel"),
                 (sender, e) =>
                 {
-                    SettingHelper.Set("Visible", false);
-                    ShowNotification(TranslationHelper.Get("Icon_HideMessageTitle"), TranslationHelper.Get("Icon_HideMessage"));
-                    GetInstance().Dispose();
+                    if(!SettingHelper.Get("Watcher", false))
+                    {
+                        SettingHelper.Set("Watcher", true);
+                        DesktopWatcher.GetInstance().WatcherStart();
+                    }
+                    else
+                    {
+                        SettingHelper.Set("Watcher", false);
+                        DesktopWatcher.GetInstance().WatcherEnd();
+                    }
                 })
             { Enabled = true };
         //----------//
@@ -92,6 +100,7 @@ namespace QuickLook
 
                     //add by gh - 添加隐藏选项
                     _visible,
+                    _watcher,
                     //----------//
 
                     new MenuItem(TranslationHelper.Get("Icon_Quit"),
@@ -99,7 +108,12 @@ namespace QuickLook
                 })
             };
 
-            _icon.ContextMenu.Popup += (sender, e) => { _itemAutorun.Checked = AutoStartupHelper.IsAutorun(); };
+            _icon.ContextMenu.Popup += (sender, e) => { _itemAutorun.Checked = AutoStartupHelper.IsAutorun();
+                //add by gh
+                _watcher.Checked = SettingHelper.Get("Watcher", false);
+                //----------------//
+            };
+       
         }
 
         public void Dispose()
@@ -145,6 +159,7 @@ namespace QuickLook
         public static TrayIconManager GetInstance()
         {
             return _instance ?? (_instance = new TrayIconManager());
+            
         }
     }
 }

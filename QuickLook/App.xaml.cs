@@ -149,7 +149,10 @@ namespace QuickLook
                     TrayIconManager.ShowNotification("", TranslationHelper.Get("APP_START"));
             }
             //自己添加的功能，与quick look无关
-            DesktopWatcher.GetInstance();
+            if (SettingHelper.Get("Watcher", false))
+            {
+                DesktopWatcher.GetInstance().WatcherStart();
+            }
             
             if (e.Args.Contains("/first"))
             {

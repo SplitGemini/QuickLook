@@ -11,32 +11,46 @@ namespace QuickLook
     internal class DesktopWatcher
     {
         private static DesktopWatcher _instance;
-        private static FileSystemWatcher _watcher = new FileSystemWatcher();
-        private static string publicDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+        private static FileSystemWatcher _watcher = null;
+        private static readonly string publicDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
         private static readonly string userDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        protected DesktopWatcher()
+        private static readonly FileSystemEventHandler _onProcess = new FileSystemEventHandler(OnProcess);
+        protected DesktopWatcher() {}
+
+        public void WatcherStart()
         {
-            WatcherStart(publicDesktopPath, "*");
+            if (_watcher != null) return;
+            MoveFiles();
+            _watcher = new FileSystemWatcher
+            {
+                Path = publicDesktopPath,
+                Filter = "*",
+                EnableRaisingEvents = true,
+                NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName
+                                   | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size,
+                IncludeSubdirectories = false
+            };
+            _watcher.Changed += _onProcess;
+            _watcher.Created += _onProcess;
         }
-        private static void WatcherStart(string path, string filter)
+
+        public void WatcherEnd()
         {
-            _watcher.Path = path;
-            _watcher.Filter = filter;
-            _watcher.Changed += new FileSystemEventHandler(OnProcess);
-            _watcher.Created += new FileSystemEventHandler(OnProcess);
-            _watcher.EnableRaisingEvents = true;
-            _watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName
-                                   | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
-            _watcher.IncludeSubdirectories = false;
+            _watcher.Changed -= _onProcess;
+            _watcher.Created -= _onProcess;
+            _watcher.Dispose();
+            _watcher = null;
         }
+
         private static void OnProcess(object source, FileSystemEventArgs e)
         {
-            _watcher.Changed -= new FileSystemEventHandler(OnProcess);
-            _watcher.Created -= new FileSystemEventHandler(OnProcess);
+            _watcher.Changed -= _onProcess;
+            _watcher.Created -= _onProcess;
             MoveFiles();
-            _watcher.Changed += new FileSystemEventHandler(OnProcess);
-            _watcher.Created += new FileSystemEventHandler(OnProcess);
+            _watcher.Changed += _onProcess;
+            _watcher.Created += _onProcess;
         }
+
         private static void MoveFiles()
         {
             System.Threading.Thread.Sleep(2000);
@@ -79,5 +93,6 @@ namespace QuickLook
         {
             return _instance ?? (_instance = new DesktopWatcher());
         }
+
     }
 }
