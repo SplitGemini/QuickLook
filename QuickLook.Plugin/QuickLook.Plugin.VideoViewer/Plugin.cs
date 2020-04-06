@@ -63,6 +63,7 @@ namespace QuickLook.Plugin.VideoViewer
             {
                 //editby gh
                 _mediaInfo = new MediaInfo.MediaInfo(Assembly.GetExecutingAssembly().Location);
+                //_mediaInfo = new MediaInfo.MediaInfo();
                 //_mediaInfo = new MediaInfo.MediaInfo(Path.Combine(
                     //Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     //Environment.Is64BitProcess ? "MediaInfo-x64\\" : "MediaInfo-x86\\"));

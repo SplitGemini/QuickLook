@@ -81,7 +81,7 @@ namespace QuickLook.Plugin.VideoViewer
             buttonTime.Click += (sender, e) => buttonTime.Tag = (string) buttonTime.Tag == "Time" ? "Length" : "Time";
             buttonMute.Click += (sender, e) => volumeSliderLayer.Visibility = Visibility.Visible;
             volumeSliderLayer.MouseDown += (sender, e) => volumeSliderLayer.Visibility = Visibility.Collapsed;
-
+           
             sliderProgress.PreviewMouseDown += (sender, e) =>
             {
                 _wasPlaying = mediaElement.IsPlaying;
@@ -264,13 +264,13 @@ namespace QuickLook.Plugin.VideoViewer
                 metaAlbum.Text = album;
 
                 //add by gh - 缩略图，改进mediainfo在mp3有两张缩略图时不能显示问题
+                
                 var scale = DpiHelper.GetCurrentScaleFactor();
                 var icon =
                     WindowsThumbnailExtension.GetThumbnail(path,
                         (int)(800 * scale.Horizontal),
                         (int)(800 * scale.Vertical),
                         ThumbnailOptions.ScaleUp);
-                
                 CoverArt = icon?.ToBitmapSource();
                 icon?.Dispose();
                 //---------//
@@ -283,7 +283,8 @@ namespace QuickLook.Plugin.VideoViewer
                     {
                         CoverArt = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.None);
                     }
-                *///-------------//
+                    */
+                //-------------//
             }
             catch (Exception)
             {

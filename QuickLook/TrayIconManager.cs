@@ -52,6 +52,17 @@ namespace QuickLook
                 })
             { Enabled = true };
         //----------//
+        //add by gh
+        private readonly MenuItem _watch =
+            new MenuItem(TranslationHelper.Get("Icon_VisibleLabel"),
+                (sender, e) =>
+                {
+                    SettingHelper.Set("Visible", false);
+                    ShowNotification(TranslationHelper.Get("Icon_HideMessageTitle"), TranslationHelper.Get("Icon_HideMessage"));
+                    GetInstance().Dispose();
+                })
+            { Enabled = true };
+        //----------//
 
         private TrayIconManager()
         {

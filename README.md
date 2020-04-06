@@ -1,7 +1,7 @@
 
 ![QuickLook icon](https://user-images.githubusercontent.com/1687847/29485863-8cd61b7c-84e2-11e7-97d5-eacc2ba10d28.png)
 
-### 自改3.6.6
+### 自改3.6.7
 
 QuickLook 项目
 - edit "TrayIconManager.cs"
@@ -17,6 +17,7 @@ QuickLook.Plugin - VideoViewer
 - add "WindowsThumbnailProvider.cs"
 - update LavFilters 0.72 to 0.74.1 and remove 32 bit version
 - remove 32 bit version Mediainfo
+-update MediaInfo.dll and MediaInfo.Wrapper.dll
 
 QuickLook.Plugin - ImageViewer
 - edit "Plugin.cs"
@@ -64,6 +65,7 @@ QuickLook.Plugin - PdfViewer
 1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化
 1. 将之前在VideoViewer添加的预览缩略图文件"WindowsThumbnailProvider.cs"移动在QuickLook.Common中并改名为"WindowsThumbnailExtension.cs"，并删除QuickLook原有的文件
 1. ImageViewer读取不出heif图片大小时使用系统方法
+1. 更新MediaViewer里的MediaInfo和MediaInfo.Wrapper
 
 # QuickLook
 

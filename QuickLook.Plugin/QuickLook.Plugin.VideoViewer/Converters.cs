@@ -69,4 +69,5 @@ namespace QuickLook.Plugin.VideoViewer
             throw new NotImplementedException();
         }
     }
+
 }
