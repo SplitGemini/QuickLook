@@ -58,7 +58,7 @@ namespace QuickLook.Plugin.ImageViewer.AnimatedImage
                         var scaled = new TransformedBitmap(img,
                             new ScaleTransform(fullSize.Width / img.PixelWidth, fullSize.Height / img.PixelHeight));
                         scaled.Freeze();
-
+                        
                         return scaled;
                     }
                 }

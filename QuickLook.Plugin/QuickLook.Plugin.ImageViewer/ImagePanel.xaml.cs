@@ -92,12 +92,17 @@ namespace QuickLook.Plugin.ImageViewer
             ContextObject = context;
             Meta = meta;
 
+            //comment by gh - no need to set min and max, something wrong
+            /*
             var s = meta.GetSize();
             _minZoomFactor = Math.Min(200d / s.Height, 400d / s.Width);
             _maxZoomFactor = Math.Min(9000d / s.Height, 9000d / s.Width);
+            */
+            //--------------------//
 
             ShowMeta();
             Theme = ContextObject.Theme;
+            
         }
 
         public bool ZoomWithControlKey
@@ -171,6 +176,8 @@ namespace QuickLook.Plugin.ImageViewer
             }
         }
 
+        //comment by gh
+        /*
         public double MinZoomFactor
         {
             get => _minZoomFactor;
@@ -190,6 +197,7 @@ namespace QuickLook.Plugin.ImageViewer
                 OnPropertyChanged();
             }
         }
+        */
 
         public double ZoomToFitFactor
         {
@@ -416,7 +424,6 @@ namespace QuickLook.Plugin.ImageViewer
         public void DoZoomToFit()
         {
             UpdateZoomToFitFactor();
-
             Zoom(ZoomToFitFactor, false, true);
         }
 
@@ -429,7 +436,7 @@ namespace QuickLook.Plugin.ImageViewer
             }
 
             var factor = Math.Min(viewPanel.ActualWidth / viewPanelImage.Source.Width,
-                viewPanel.ActualHeight / viewPanelImage.Source.Height);
+            viewPanel.ActualHeight / viewPanelImage.Source.Height);
 
             ZoomToFitFactor = factor;
         }
@@ -464,8 +471,10 @@ namespace QuickLook.Plugin.ImageViewer
                     ZoomToFit = false;
             }
 
-            factor = Math.Max(factor, MinZoomFactor);
-            factor = Math.Min(factor, MaxZoomFactor);
+            //comment by gh
+            //factor = Math.Max(factor, MinZoomFactor);
+            //factor = Math.Min(factor, MaxZoomFactor);
+            //---------------//
 
             ZoomFactor = factor;
 

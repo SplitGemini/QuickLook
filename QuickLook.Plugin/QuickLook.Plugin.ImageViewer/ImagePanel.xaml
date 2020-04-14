@@ -52,7 +52,7 @@
         </Rectangle>
         <ScrollViewer x:Name="viewPanel" BorderThickness="0" HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto" Focusable="False" IsManipulationEnabled="True">
-            <animatedImage:AnimatedImage x:Name="viewPanelImage" Stretch="None"
+            <animatedImage:AnimatedImage x:Name="viewPanelImage" Stretch="None" 
                                          Meta="{Binding Meta, ElementName=imagePanel}"
                                          ContextObject="{Binding ContextObject, ElementName=imagePanel}"
                                          RenderOptions.BitmapScalingMode="{Binding RenderMode, ElementName=imagePanel}"
@@ -61,7 +61,7 @@
         <Border x:Name="zoomLevelInfo" CornerRadius="5" IsHitTestVisible="False" Opacity="0" Background="Gray"
                 Padding="15,4,15,4" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Foreground="White" FontSize="18"
-                       Text="{Binding ElementName=imagePanel, Path=ZoomFactor, StringFormat={}{0:P0}}" />
+                       Text="{Binding ElementName=imagePanel, Path=ZoomFactor, StringFormat={}{0:P2}}" />
             <Border.Resources>
                 <Storyboard x:Key="StoryboardShowZoomLevelInfo">
                     <DoubleAnimationUsingKeyFrames Storyboard.Target="{Binding Source={x:Reference zoomLevelInfo}}"

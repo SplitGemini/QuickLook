@@ -91,6 +91,7 @@ namespace QuickLook.Plugin.ImageViewer
                     w = image.Width;
                     h = image.Height;
                 }
+                if (w == 0 || h == 0) return Size.Empty;
             }
             //--------------//
                 
