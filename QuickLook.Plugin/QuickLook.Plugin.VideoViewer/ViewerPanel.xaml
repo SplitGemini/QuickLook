@@ -85,6 +85,9 @@
                 <TextBlock x:Name="metaLength" Grid.Row="5" FontSize="14" Padding="3" TextTrimming="CharacterEllipsis"
                            Foreground="{DynamicResource WindowTextForeground}"
                            Text="{Binding ElementName=mediaElement, Path=MediaDuration, Converter={StaticResource TimeTickToShortStringConverter}}" />
+                <TextBlock x:Name="metaLyric" Grid.Row="6" FontSize="14" Padding="3" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource WindowTextForeground}"
+                           Text="{Binding Lyric, ElementName=viewerPanel}" TextWrapping="Wrap"/>
             </Grid>
         </Grid>
 

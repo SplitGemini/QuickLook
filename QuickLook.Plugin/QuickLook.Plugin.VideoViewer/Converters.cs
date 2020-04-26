@@ -29,7 +29,7 @@ namespace QuickLook.Plugin.VideoViewer
             if (value == null)
                 return "00:00";
 
-            var v = TimeSpan.FromTicks((long) value);
+            var v = TimeSpan.FromTicks((long)value);
 
             var s = string.Empty;
             if (v.Hours > 0)
@@ -48,20 +48,20 @@ namespace QuickLook.Plugin.VideoViewer
 
     public sealed class VolumeToIconConverter : DependencyObject, IValueConverter
     {
-        private static readonly string[] Volumes = {"\xE74F", "\xE993", "\xE994", "\xE995"};
+        private static readonly string[] Volumes = { "\xE74F", "\xE993", "\xE994", "\xE995" };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
                 return Volumes[0];
 
-            var v = (double) value;
+            var v = (double)value;
             if (Math.Abs(v) < 0.01)
                 return Volumes[0];
 
             v = Math.Min(v, 1);
 
-            return Volumes[1 + (int) (v / 0.34)];
+            return Volumes[1 + (int)(v / 0.34)];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -176,8 +176,7 @@ namespace QuickLook.Plugin.ImageViewer
             }
         }
 
-        //comment by gh
-        /*
+
         public double MinZoomFactor
         {
             get => _minZoomFactor;
@@ -197,7 +196,7 @@ namespace QuickLook.Plugin.ImageViewer
                 OnPropertyChanged();
             }
         }
-        */
+        
 
         public double ZoomToFitFactor
         {
