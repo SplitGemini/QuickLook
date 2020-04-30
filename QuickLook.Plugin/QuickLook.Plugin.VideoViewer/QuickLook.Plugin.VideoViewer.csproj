@@ -84,6 +84,7 @@
     </Reference>
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -139,6 +140,7 @@
     <ProjectReference Include="..\..\QuickLook.Common\QuickLook.Common.csproj">
       <Project>{85fdd6ba-871d-46c8-bd64-f6bb0cb5ea95}</Project>
       <Name>QuickLook.Common</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\QuickLook\QuickLook.csproj">
       <Project>{8b4a9ce5-67b5-4a94-81cb-3771f688fdeb}</Project>

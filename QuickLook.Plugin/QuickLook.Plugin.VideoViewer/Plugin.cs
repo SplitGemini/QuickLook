@@ -29,7 +29,7 @@ namespace QuickLook.Plugin.VideoViewer
     {
         private static readonly string[] Formats =
         {
-            // video - add rmvb
+            // video - add rmvb by gh
             ".3g2", ".3gp", ".3gp2", ".3gpp", ".amv", ".asf", ".asf", ".avi", ".flv", ".mts", ".m2ts", ".m4v", ".mkv",
             ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",".rmvb",
             // audio
@@ -61,7 +61,7 @@ namespace QuickLook.Plugin.VideoViewer
 
             try
             {
-                //editby gh
+                //edit by gh
                 _mediaInfo = new MediaInfo.MediaInfo(Assembly.GetExecutingAssembly().Location);
                 //_mediaInfo = new MediaInfo.MediaInfo();
                 //_mediaInfo = new MediaInfo.MediaInfo(Path.Combine(
@@ -69,9 +69,9 @@ namespace QuickLook.Plugin.VideoViewer
                     //Environment.Is64BitProcess ? "MediaInfo-x64\\" : "MediaInfo-x86\\"));
                 //----------//
 
-                //-----comment by gh---
+                //comment by gh
                 //_mediaInfo.Option("Cover_Data", "base64");
-                //---------------------
+                //---------------------//
 
                 _mediaInfo.Open(path);
 
@@ -100,7 +100,10 @@ namespace QuickLook.Plugin.VideoViewer
                 if (rotation % 180 != 0)
                     windowSize = new Size(windowSize.Height, windowSize.Width);
 
-                context.SetPreferredSizeFit(windowSize, 0.8);
+                //edit by gh
+                context.SetPreferredSizeFit(windowSize, 0.9);
+                //context.SetPreferredSizeFit(windowSize, 0.8);
+                //--------//
 
                 context.TitlebarAutoHide = true;
                 context.Theme = Themes.Dark;

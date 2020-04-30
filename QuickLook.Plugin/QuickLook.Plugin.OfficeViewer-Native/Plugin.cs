@@ -58,7 +58,7 @@ namespace QuickLook.Plugin.OfficeViewer
             //comment by gh - I need larger size
             //context.SetPreferredSizeFit(new Size {Width = 800, Height = 800}, 0.8);
             //----------------//
-            context.SetPreferredSizeFit(new Size { Width = 1200, Height = 800 }, 0.8);
+            context.SetPreferredSizeFit(new Size { Width = 1200, Height = 800 }, 0.9);
         }
 
         public void View(string path, ContextObject context)

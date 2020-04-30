@@ -54,9 +54,11 @@ namespace QuickLook.Plugin.VideoViewer
         private bool _isPlaying;
         private bool _wasPlaying;
         private bool _shouldLoop;
+        //add by gh
         private string _lyric;
         DispatcherTimer Timer;
         LrcManager Manager { get; set; }
+        //------------//
 
         public ViewerPanel(ContextObject context)
         {
@@ -101,21 +103,27 @@ namespace QuickLook.Plugin.VideoViewer
 
             PreviewMouseWheel += (sender, e) => ChangeVolume((double) e.Delta / 120 * 0.04);
 
+            //add by gh
             Manager = new LrcManager();
             Timer = new DispatcherTimer();
             Timer.Tick += new EventHandler(Timer_Tick);
             Timer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            //-------------//
         }
 
+        //add by gh
         public string Lyric
         {
             get => _lyric;
             private set
             {
+                if (value.Equals(_lyric)) return;
                 _lyric = value;
                 OnPropertyChanged(Lyric);
             }
         }
+        //-----------//
+
         public bool HasVideo
         {
             get => _hasVideo;
@@ -197,11 +205,15 @@ namespace QuickLook.Plugin.VideoViewer
                 return;
 
             HasVideo = mediaElement.HasVideo;
-            if (!HasVideo)
+
+            //add by gh
+            if (!HasVideo && !isNullLyric)
             {
                 Timer.Start();
             }
             else Timer.Stop();
+            //----------//
+
             _context.IsBusy = false;
         }
 
@@ -213,7 +225,8 @@ namespace QuickLook.Plugin.VideoViewer
                     new Label {Content = e.Exception, VerticalAlignment = VerticalAlignment.Center};
                 _context.IsBusy = false;
             }));
-            Timer.Stop();
+            
+            Timer.Stop();   //add by gh
         }
 
         private void MediaEnded(object sender, RoutedEventArgs e)
@@ -221,19 +234,26 @@ namespace QuickLook.Plugin.VideoViewer
             if (mediaElement == null)
                 return;
 
-            Timer.Stop();
             mediaElement.MediaPosition = 0;
             if (ShouldLoop)
             {
                 IsPlaying = true;
 
                 mediaElement.Play();
+                //add by gh
+                if(!HasVideo && !isNullLyric)
+                    Timer.Start();
+                //--------//
             }
             else
             {
                 IsPlaying = false;
                 
                 mediaElement.Pause();
+                //add by gh
+                if (!HasVideo && !isNullLyric)
+                    Timer.Stop();
+                //----------//
             }
         }
 
@@ -271,12 +291,14 @@ namespace QuickLook.Plugin.VideoViewer
                     break;
             }
         }
-        private static string[] MediaExtensions = new string[] { ".mp3", ".wav", ".m4a", ".wma", ".aac", ".flac", ".ape", ".opus", ".ogg" };
-        private static string[] LyricExtensions = new string[] { ".lrc", ".txt" };
+
+        //add by gh
+        private static string[] MusicExtensions = new string[] { ".mp3", ".wav", ".m4a", ".wma", ".aac", ".flac", ".ape", ".opus", ".ogg" };
+        bool isNullLyric = false;
         private void GetLyric(string filename)
         {
             var lyricname = string.Empty;
-            foreach (var ext in MediaExtensions)
+            foreach (var ext in MusicExtensions)
             {
                 if (filename.EndsWith(ext))
                 {
@@ -287,7 +309,7 @@ namespace QuickLook.Plugin.VideoViewer
             if (!lyricname.Equals(string.Empty) && File.Exists(lyricname))
             {
                 if (!Manager.LoadFromFile(lyricname))
-                    Timer.Stop();
+                    isNullLyric = true;
             }
             else if (filename.EndsWith(".mp3"))   //一般只有mp3采用id2tag
             {
@@ -297,10 +319,12 @@ namespace QuickLook.Plugin.VideoViewer
                 if (lyric != null)
                 {
                     if (!Manager.LoadFromText(lyric))
-                        Timer.Stop();
+                        isNullLyric = true;
                 }
             }
         }
+        //-----------------//
+
         private void UpdateMeta(string path, MediaInfo.MediaInfo info)
         {
             if (HasVideo)
@@ -329,6 +353,7 @@ namespace QuickLook.Plugin.VideoViewer
                         ThumbnailOptions.ScaleUp);
                 CoverArt = icon?.ToBitmapSource();
                 icon?.Dispose();
+                GetLyric(path);
                 //---------//
 
                 //comment by gh
@@ -341,7 +366,6 @@ namespace QuickLook.Plugin.VideoViewer
                     }
                     */
                 //-------------//
-                GetLyric(path);
             }
             catch (Exception)
             {
@@ -397,6 +421,7 @@ namespace QuickLook.Plugin.VideoViewer
             mediaElement.Play();
         }
 
+        //add by gh
         /// <summary>
         /// 每个计时器时刻，更新歌词
         /// </summary>
@@ -410,6 +435,7 @@ namespace QuickLook.Plugin.VideoViewer
             var current = mediaElement.MediaPosition;
             metaLyric.Text = Manager.GetNearestLrc(current);
         }
+        //---------------//
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

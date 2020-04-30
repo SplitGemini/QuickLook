@@ -10,14 +10,15 @@ QuickLook 项目
 - edit "PipeServerManager.cs"
 - add "DesktopWatcher.cs"
 - edit NativeMethod/QuickLook.cs
+- remove Plugin/"WindowsThumbnailProvider.cs"
 
 QuickLook.Plugin - VideoViewer
 - edit "ViewPanel.xaml.cs"
 - edit "Plugin.cs"
-- add "WindowsThumbnailProvider.cs"
 - update LavFilters 0.72 to 0.74.1 and remove 32 bit version
 - remove 32 bit version Mediainfo
--update MediaInfo.dll and MediaInfo.Wrapper.dll
+- update MediaInfo.dll and MediaInfo.Wrapper.dll
+- add Lyric folder to achive show lyric line when play music
 
 QuickLook.Plugin - ImageViewer
 - edit "Plugin.cs"
@@ -45,8 +46,6 @@ QuickLook.Native - QuickLook.Native64
 
 QuickLook.Common
 - add "ExtensionMethod/WindowsThumbnailExtension.cs"
-- remove [QuickLook.Plugin - VideoViewer] "WindowsThumbnailProvider.cs", and use the same method from here
-- remove [QuickLook] Plugin/"WindowsThumbnailProvider.cs" too, and use the same method from here
 
 QuickLook.Plugin - PdfViewer
 - edit "Plugin.cs"
@@ -66,6 +65,7 @@ QuickLook.Plugin - PdfViewer
 1. 将之前在VideoViewer添加的预览缩略图文件"WindowsThumbnailProvider.cs"移动在QuickLook.Common中并改名为"WindowsThumbnailExtension.cs"，并删除QuickLook原有的文件
 1. ImageViewer读取不出heif图片大小时使用系统方法
 1. 更新MediaViewer里的MediaInfo和MediaInfo.Wrapper
+1. 添加音乐界面歌词显示
 
 # QuickLook
 

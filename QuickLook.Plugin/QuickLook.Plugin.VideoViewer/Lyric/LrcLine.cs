@@ -1,4 +1,5 @@
-﻿using System;
+﻿/* create by gh */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,22 +33,7 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
             }
             LrcText = text;
         }
-        public LrcLine(TimeSpan? time)
-            : this(time, string.Empty)
-        {
 
-        }
-        public LrcLine(LrcLine lrcLine)
-            : this(lrcLine.LrcTime, lrcLine.LrcText)
-        {
-            //LrcTime = lrcLine.LrcTime;
-            //LrcText = lrcLine.LrcText;
-        }
-        public LrcLine(string line)
-            : this(Parse(line))
-        {
-
-        }
         public LrcLine()
         {
             LrcTime = null;

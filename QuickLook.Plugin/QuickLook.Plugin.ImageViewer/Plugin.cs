@@ -30,10 +30,10 @@ namespace QuickLook.Plugin.ImageViewer
     {
         private static readonly string[] Formats =
         {
-            // camera raw ,add dds,tga ;add by gh
+            // camera raw ,add dds - add by gh
             ".ari", ".arw", ".bay", ".crw", ".cr2", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".fff",
             ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
-            ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f",".dds",".tga",
+            ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f", ".dds",
             // normal
             ".bmp",".heic", ".heif", ".ico", ".icon", ".jpg", ".jpeg", ".psd", ".wdp", ".tif", ".tiff", ".tga", ".webp", ".pbm",
             ".pgm", ".ppm", ".pnm",
