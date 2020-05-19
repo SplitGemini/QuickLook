@@ -66,6 +66,7 @@
     <Compile Include="..\GitVersion.cs">
       <Link>Properties\GitVersion.cs</Link>
     </Compile>
+    <Compile Include="ExtensionMethods\EncodingExtensions.cs" />
     <Compile Include="ExtensionMethods\WindowsThumbnailExtension.cs" />
     <Compile Include="Plugin\ContextObject.cs" />
     <Compile Include="Helpers\DpiHelper.cs" />

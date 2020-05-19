@@ -44,7 +44,7 @@ namespace QuickLook.Helpers
             {
                 try
                 {
-                    var json = DownloadJson("https://api.github.com/repos/xupefei/QuickLook/releases/latest");
+                    var json = DownloadJson("https://api.github.com/repos/SplitGemini/QuickLook/releases/latest");
 
                     var nVersion = (string) json["tag_name"];
                     //nVersion = "9.2.1";
@@ -68,7 +68,7 @@ namespace QuickLook.Helpers
                                 timeout: 20000,
                                 clickEvent:
                                 () => Process.Start(
-                                    @"https://github.com/xupefei/QuickLook/releases/latest"));
+                                    @"https://github.com/SplitGemini/QuickLook/releases/latest"));
                         });
                 }
                 catch (Exception e)
@@ -87,7 +87,7 @@ namespace QuickLook.Helpers
             {
                 try
                 {
-                    var json = DownloadJson("https://api.github.com/repos/xupefei/QuickLook/releases");
+                    var json = DownloadJson("https://api.github.com/repos/SplitGemini/QuickLook/releases");
 
                     var notes = string.Empty;
 

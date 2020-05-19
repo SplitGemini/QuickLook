@@ -22,7 +22,7 @@ using System.Linq;
 using System.Windows;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
-using QuickLook.Plugin.ImageViewer.AnimatedImage;
+using QuickLook.Plugin.ImageViewer.AnimatedImage.Providers;
 
 namespace QuickLook.Plugin.ImageViewer
 {
@@ -35,13 +35,13 @@ namespace QuickLook.Plugin.ImageViewer
             ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
             ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f", ".dds",
             // normal
-            ".bmp",".heic", ".heif", ".ico", ".icon", ".jpg", ".jpeg", ".psd", ".wdp", ".tif", ".tiff", ".tga", ".webp", ".pbm",
-            ".pgm", ".ppm", ".pnm",
+            ".bmp", ".heic", ".heif", ".ico", ".icon", ".jpg", ".jpeg", ".psd", ".wdp", ".tif", ".tiff", ".tga",
+            ".webp", ".pbm", ".pgm", ".ppm", ".pnm", ".svg", ".emf", ".wmf",
             // animated
             ".png", ".apng", ".gif"
         };
         private ImagePanel _ip;
-        private NConvert _meta;
+        private MetaProvider _meta;
 
         public int Priority => 0;
 
@@ -49,16 +49,16 @@ namespace QuickLook.Plugin.ImageViewer
         {
             AnimatedImage.AnimatedImage.Providers.Add(
                 new KeyValuePair<string[], Type>(new[] {".apng", ".png"},
-                    typeof(APngAnimationProvider)));
+                    typeof(APngProvider)));
             AnimatedImage.AnimatedImage.Providers.Add(
                 new KeyValuePair<string[], Type>(new[] {".gif"},
-                    typeof(GifAnimationProvider)));
+                    typeof(GifProvider)));
             AnimatedImage.AnimatedImage.Providers.Add(
                 new KeyValuePair<string[], Type>(new[] {".bmp", ".jpg", ".jpeg", ".tif", ".tiff"},
-                    typeof(NativeImageProvider)));
+                    typeof(NativeProvider)));
             AnimatedImage.AnimatedImage.Providers.Add(
                 new KeyValuePair<string[], Type>(new[] {"*"},
-                    typeof(NConvertImageProvider)));
+                    typeof(ImageMagickProvider)));
         }
 
         public bool CanHandle(string path)
@@ -68,7 +68,7 @@ namespace QuickLook.Plugin.ImageViewer
 
         public void Prepare(string path, ContextObject context)
         {
-            _meta = new NConvert(path);
+            _meta = new MetaProvider(path);
 
             var size = _meta.GetSize();
 

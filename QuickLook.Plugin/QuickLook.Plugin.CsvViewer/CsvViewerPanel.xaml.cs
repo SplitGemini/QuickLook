@@ -24,6 +24,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using CsvHelper;
+using QuickLook.Common.ExtensionMethods;
 
 namespace QuickLook.Plugin.CsvViewer
 {
@@ -44,14 +45,14 @@ namespace QuickLook.Plugin.CsvViewer
             const int limit = 10000;
             var binded = false;
 
-            using (var sr = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var sr = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), EncodingExtensions.GetEncoding(path)))
             {
 
                 //edit by gh
                 //var conf = new CsvHelper.Configuration.Configuration() {MissingFieldFound = null, BadDataFound = null};
-                var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null};
+                var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null };
                 //-------------------//
-               
+
                 using (var parser = new CsvParser(sr, conf))
                 {
                     var i = 0;
@@ -60,7 +61,7 @@ namespace QuickLook.Plugin.CsvViewer
                         var row = parser.Read();
                         if (row == null)
                             break;
-                        row = Concat(new[] {$"{i++ + 1}".PadLeft(6)}, row);
+                        row = Concat(new[] { $"{i++ + 1}".PadLeft(6) }, row);
 
                         if (!binded)
                         {

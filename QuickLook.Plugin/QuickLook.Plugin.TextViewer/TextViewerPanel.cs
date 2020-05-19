@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -28,6 +29,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
+using QuickLook.Common.ExtensionMethods;
 using UtfUnknown;
 
 namespace QuickLook.Plugin.TextViewer
@@ -49,6 +51,12 @@ namespace QuickLook.Plugin.TextViewer
             IsManipulationEnabled = true;
             Options.EnableEmailHyperlinks = false;
             Options.EnableHyperlinks = false;
+
+            ContextMenu = new ContextMenu();
+            ContextMenu.Items.Add(new MenuItem
+                {Header = TranslationHelper.Get("Editor_Copy"), Command = ApplicationCommands.Copy});
+            ContextMenu.Items.Add(new MenuItem
+                {Header = TranslationHelper.Get("Editor_SelectAll"), Command = ApplicationCommands.SelectAll});
 
             ManipulationInertiaStarting += Viewer_ManipulationInertiaStarting;
             ManipulationStarting += Viewer_ManipulationStarting;
@@ -124,7 +132,7 @@ namespace QuickLook.Plugin.TextViewer
         {
             Task.Run(() =>
             {
-                const int maxLength = 50 * 1024 * 1024;
+                const int maxLength = 5 * 1024 * 1024;
                 var buffer = new MemoryStream();
                 bool tooLong;
 
@@ -146,13 +154,16 @@ namespace QuickLook.Plugin.TextViewer
                     return;
 
                 if (tooLong)
-                    _context.Title += " (0 ~ 50MB)";
+                    _context.Title += " (0 ~ 5MB)";
 
                 var bufferCopy = buffer.ToArray();
                 buffer.Dispose();
 
-                var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
-                               Encoding.Default;
+                //edit by gh
+                //var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
+                //Encoding.Default;
+                var encoding = EncodingExtensions.GetEncoding(path);
+                //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));
                 doc.SetOwnerThread(Dispatcher.Thread);

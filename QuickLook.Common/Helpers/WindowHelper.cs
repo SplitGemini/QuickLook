@@ -33,9 +33,20 @@ namespace QuickLook.Common.Helpers
             WcaAccentPolicy = 19
         }
 
-        public static Rect GetCurrentWindowRect()
+        public static Rect GetCurrentDesktopRect()
         {
-            var screen = Screen.FromPoint(Cursor.Position).WorkingArea;
+            return GetDesktopRectFromWindow(User32.GetForegroundWindow());
+        }
+
+        public static Rect GetDesktopRectFromWindow(Window window)
+        {
+            return GetDesktopRectFromWindow(new WindowInteropHelper(window).Handle);
+        }
+
+        public static Rect GetDesktopRectFromWindow(IntPtr hwnd)
+        {
+            var screen = Screen.FromHandle(hwnd).WorkingArea;
+
             var scale = DpiHelper.GetCurrentScaleFactor();
             return new Rect(
                 new Point(screen.X / scale.Horizontal, screen.Y / scale.Vertical),
@@ -45,6 +56,8 @@ namespace QuickLook.Common.Helpers
         public static void BringToFront(this Window window, bool keep)
         {
             var handle = new WindowInteropHelper(window).Handle;
+            keep |= window.Topmost;
+
             User32.SetWindowPos(handle, User32.HWND_TOPMOST, 0, 0, 0, 0,
                 User32.SWP_NOMOVE | User32.SWP_NOSIZE | User32.SWP_NOACTIVATE);
 
@@ -100,10 +113,11 @@ namespace QuickLook.Common.Helpers
             return procId == Process.GetCurrentProcess().Id;
         }
 
-        public static void SetNoactivate(WindowInteropHelper window)
+        public static void SetNoactivate(this Window window)
         {
-            User32.SetWindowLong(window.Handle, User32.GWL_EXSTYLE,
-                User32.GetWindowLong(window.Handle, User32.GWL_EXSTYLE) |
+            var hwnd = new WindowInteropHelper(window);
+            User32.SetWindowLong(hwnd.Handle, User32.GWL_EXSTYLE,
+                User32.GetWindowLong(hwnd.Handle, User32.GWL_EXSTYLE) |
                 User32.WS_EX_NOACTIVATE);
         }
 

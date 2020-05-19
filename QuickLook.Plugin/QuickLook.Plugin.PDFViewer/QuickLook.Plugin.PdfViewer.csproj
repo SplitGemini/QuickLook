@@ -65,7 +65,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\Build\%24%28Configuration%29\QuickLook.Plugin\%24%28ProjectName%29\</OutputPath>
+    <OutputPath>..\..\Build\Debug\QuickLook.Plugin\QuickLook.Plugin.PdfViewer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>

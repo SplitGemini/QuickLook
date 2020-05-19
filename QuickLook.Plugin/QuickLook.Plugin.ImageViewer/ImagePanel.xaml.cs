@@ -31,6 +31,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using QuickLook.Common.Annotations;
+using QuickLook.Common.ExtensionMethods;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 
@@ -48,10 +49,10 @@ namespace QuickLook.Plugin.ImageViewer
         private bool _isZoomFactorFirstSet = true;
         private DateTime _lastZoomTime = DateTime.MinValue;
         private double _maxZoomFactor = 3d;
-        private NConvert _meta;
+        private MetaProvider _meta;
         private Visibility _metaIconVisibility = Visibility.Visible;
         private double _minZoomFactor = 0.1d;
-        private BitmapScalingMode _renderMode = BitmapScalingMode.HighQuality;
+        private BitmapScalingMode _renderMode = BitmapScalingMode.Linear;
         private bool _showZoomLevelInfo = true;
         private BitmapSource _source;
         private double _zoomFactor = 1d;
@@ -87,22 +88,17 @@ namespace QuickLook.Plugin.ImageViewer
             viewPanel.ManipulationDelta += ViewPanel_ManipulationDelta;
         }
 
-        internal ImagePanel(ContextObject context, NConvert meta) : this()
+        internal ImagePanel(ContextObject context, MetaProvider meta) : this()
         {
             ContextObject = context;
             Meta = meta;
 
-            //comment by gh - no need to set min and max, something wrong
-            /*
             var s = meta.GetSize();
-            _minZoomFactor = Math.Min(200d / s.Height, 400d / s.Width);
-            _maxZoomFactor = Math.Min(9000d / s.Height, 9000d / s.Width);
-            */
-            //--------------------//
+            //_minZoomFactor = Math.Min(200d / s.Height, 400d / s.Width);
+            //_maxZoomFactor = Math.Min(9000d / s.Height, 9000d / s.Width);
 
             ShowMeta();
             Theme = ContextObject.Theme;
-            
         }
 
         public bool ZoomWithControlKey
@@ -176,7 +172,6 @@ namespace QuickLook.Plugin.ImageViewer
             }
         }
 
-
         public double MinZoomFactor
         {
             get => _minZoomFactor;
@@ -196,7 +191,6 @@ namespace QuickLook.Plugin.ImageViewer
                 OnPropertyChanged();
             }
         }
-        
 
         public double ZoomToFitFactor
         {
@@ -261,7 +255,7 @@ namespace QuickLook.Plugin.ImageViewer
             }
         }
 
-        public NConvert Meta
+        public MetaProvider Meta
         {
             get => _meta;
             set
@@ -290,14 +284,9 @@ namespace QuickLook.Plugin.ImageViewer
         private void ShowMeta()
         {
             textMeta.Inlines.Clear();
-            Meta.GetExif().ForEach(m =>
+            Meta.GetExif().Values.ForEach(m =>
             {
                 if (string.IsNullOrWhiteSpace(m.Item1) || string.IsNullOrWhiteSpace(m.Item2))
-                    return;
-
-                if (m.Item1 == "File name" || m.Item1 == "File size" || m.Item1 == "MIME type" ||
-                    m.Item1 == "Exif comment"
-                    || m.Item1 == "Thumbnail" || m.Item1 == "Exif comment")
                     return;
 
                 textMeta.Inlines.Add(new Run(m.Item1) {FontWeight = FontWeights.SemiBold});
@@ -311,7 +300,7 @@ namespace QuickLook.Plugin.ImageViewer
         }
 
         public event EventHandler<int> ImageScrolled;
-        public event EventHandler DelayedReRender;
+        public event EventHandler ZoomChanged;
 
         private void ImagePanel_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -423,6 +412,7 @@ namespace QuickLook.Plugin.ImageViewer
         public void DoZoomToFit()
         {
             UpdateZoomToFitFactor();
+
             Zoom(ZoomToFitFactor, false, true);
         }
 
@@ -435,7 +425,7 @@ namespace QuickLook.Plugin.ImageViewer
             }
 
             var factor = Math.Min(viewPanel.ActualWidth / viewPanelImage.Source.Width,
-            viewPanel.ActualHeight / viewPanelImage.Source.Height);
+                viewPanel.ActualHeight / viewPanelImage.Source.Height);
 
             ZoomToFitFactor = factor;
         }
@@ -496,10 +486,10 @@ namespace QuickLook.Plugin.ImageViewer
             UpdateLayout();
 
             if (!suppressEvent)
-                ProcessDelayed();
+                FireZoomChangedEvent();
         }
 
-        private void ProcessDelayed()
+        private void FireZoomChangedEvent()
         {
             _lastZoomTime = DateTime.Now;
 
@@ -508,9 +498,9 @@ namespace QuickLook.Plugin.ImageViewer
                 if (DateTime.Now - _lastZoomTime < TimeSpan.FromSeconds(0.5))
                     return;
 
-                Debug.WriteLine($"ProcessDelayed fired: {Thread.CurrentThread.ManagedThreadId}");
+                Debug.WriteLine($"FireZoomChangedEvent fired: {Thread.CurrentThread.ManagedThreadId}");
 
-                Dispatcher.BeginInvoke(new Action(() => DelayedReRender?.Invoke(this, new EventArgs())),
+                Dispatcher.BeginInvoke(new Action(() => ZoomChanged?.Invoke(this, new EventArgs())),
                     DispatcherPriority.Background);
             });
         }

@@ -51,7 +51,7 @@ namespace QuickLook.Plugin.PDFViewer
 
             listThumbnails.SelectionChanged += UpdatePageViewWhenSelectionChanged;
 
-            pagePanel.DelayedReRender += ReRenderCurrentPageDelayed;
+            pagePanel.ZoomChanged += ReRenderCurrentPageDelayed;
             pagePanel.ImageScrolled += NavigatePage;
         }
 
@@ -80,7 +80,7 @@ namespace QuickLook.Plugin.PDFViewer
 
             if (pagePanel != null)
             {
-                pagePanel.DelayedReRender -= ReRenderCurrentPageDelayed;
+                pagePanel.ZoomChanged -= ReRenderCurrentPageDelayed;
                 pagePanel.ImageScrolled -= NavigatePage;
             }
 
@@ -229,14 +229,11 @@ namespace QuickLook.Plugin.PDFViewer
                     });
 
                     if (tempHandle.PageCount > 1)
-                    {
-                        size.Width += /*listThumbnails.ActualWidth 150*/ 150;
-                    }
-
+                        size.Width += /*listThumbnails.ActualWidth*/ 150;
                 }
             }
-            
-            return new Size(size.Width * 3, size.Height * 3.5);
+
+            return new Size(size.Width * 3, size.Height * 3);
         }
 
         public void LoadPdf(string path)
