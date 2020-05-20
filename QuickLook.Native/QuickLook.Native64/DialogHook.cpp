@@ -19,7 +19,6 @@
 #include "DialogHook.h"
 #include "HelperMethods.h"
 
-
 #pragma comment(linker, "/SECTION:.shared,RWS")
 #pragma data_seg(".shared")
 
@@ -30,6 +29,7 @@ static WCHAR filePathBuffer[MAX_PATH] = {'\0'};
 #pragma data_seg()
 
 #define SHARED_MEM_NAME L"QUICKLOOK_WOW64HOOKHELPER_MEM"
+
 
 void DialogHook::GetSelected(PWCHAR buffer)
 {
@@ -57,9 +57,11 @@ void DialogHook::GetSelected(PWCHAR buffer)
 	if (!IsWow64Process(GetCurrentProcess(), &isSelfWoW64))
 		return;
 
+	
 	if (isTargetWoW64 && !isSelfWoW64)
 	{
 		// if self is 64bit and target is 32bit, do this
+		// less to use at wow64 app dialog windows
 		//GetSelectedFromWoW64HookHelper(buffer);
 	}
 	else
@@ -73,6 +75,7 @@ void DialogHook::GetSelected(PWCHAR buffer)
 		SendMessage(hwndfg, WM_HOOK_NOTIFY, 0, 0);
 		wcscpy_s(buffer, MAX_PATH, filePathBuffer);
 	}
+	
 }
 
 void DialogHook::getSelectedInternal(CComPtr<IShellBrowser> psb, PWCHAR buffer)

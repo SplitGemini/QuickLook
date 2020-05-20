@@ -24,7 +24,7 @@
 
 EXPORT void Init()
 {
-
+	DOpus::PrepareMessageWindow();
 }
 
 EXPORT Shell32::FocusedWindowType GetFocusedWindowType()
