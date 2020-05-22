@@ -22,9 +22,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using CsvHelper;
 using QuickLook.Common.ExtensionMethods;
+using QuickLook.Common.Helpers;
+using QuickLook.Common.Plugin;
 
 namespace QuickLook.Plugin.CsvViewer
 {
@@ -33,9 +36,18 @@ namespace QuickLook.Plugin.CsvViewer
     /// </summary>
     public partial class CsvViewerPanel : UserControl
     {
-        public CsvViewerPanel()
+        private readonly ContextObject _context;
+        public CsvViewerPanel(string path, ContextObject context)
         {
+            _context = context;
             InitializeComponent();
+            ContextMenu = new ContextMenu();
+            ContextMenu.Items.Add(new MenuItem
+            { Header = TranslationHelper.Get("Editor_Copy"), Command = ApplicationCommands.Copy });
+            ContextMenu.Items.Add(new MenuItem
+            { Header = TranslationHelper.Get("Editor_SelectAll"), Command = ApplicationCommands.SelectAll });
+            LoadFile(path);
+            context.IsBusy = false;
         }
 
         public List<string[]> Rows { get; private set; } = new List<string[]>();
@@ -87,7 +99,8 @@ namespace QuickLook.Plugin.CsvViewer
             {
                 var col = new DataGridTextColumn
                 {
-                    FontFamily = new FontFamily("Consolas"),
+                    //FontFamily = new FontFamily("Consolas"),
+                    FontFamily = new FontFamily(TranslationHelper.Get("Editor_FontFamily")),
                     FontWeight = FontWeight.FromOpenTypeWeight(i == 0 ? 700 : 400),
                     Binding = new Binding($"[{i}]")
                 };

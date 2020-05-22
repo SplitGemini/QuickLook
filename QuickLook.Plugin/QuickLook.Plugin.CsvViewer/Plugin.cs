@@ -44,13 +44,16 @@ namespace QuickLook.Plugin.CsvViewer
 
         public void View(string path, ContextObject context)
         {
-            _panel = new CsvViewerPanel();
-
+            //edit by gh
+            _panel = new CsvViewerPanel(path, context);
+            //_panel = new CsvViewerPanel();
             context.ViewerContent = _panel;
             context.Title = $"{Path.GetFileName(path)}";
+            /*
             _panel.LoadFile(path);
 
             context.IsBusy = false;
+            */
         }
 
         public void Cleanup()
