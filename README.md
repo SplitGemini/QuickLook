@@ -1,80 +1,25 @@
 <img src="https://user-images.githubusercontent.com/1687847/82130498-8c3eac80-97d4-11ea-9e88-372ab9c50295.png" width="80">
 
-### 3.6.5 -> 3.6.6 -> 3.6.7 -> 3.6.8
-
-QuickLook Project
-- edit "TrayIconManager.cs"
-- edit "App.xaml.cs"
-- edit "NativeMethods.Quicklook.cs"
-- edit "PipeServerManager.cs"
-- add "DesktopWatcher.cs"
-- edit NativeMethod/QuickLook.cs
-- remove Plugin/"WindowsThumbnailProvider.cs"
-
-QuickLook.Plugin - VideoViewer
-- edit "ViewPanel.xaml.cs"
-- edit "Plugin.cs"
-- update LavFilters 0.72 to 0.74.1 and remove 32 bit version
-- remove 32 bit version Mediainfo
-- update MediaInfo.dll and MediaInfo.Wrapper.dll
-- add Lyric folder to achive show lyric line when play music
-
-QuickLook.Plugin - ImageViewer
-- edit "Plugin.cs"
-- update Nconvert and its plugin to 64 bit and the newest version
-- update 3.6.7 to 3.6.8 - Nconvert is repaced by magick
-
-QuickLook.Plugin - FontViewer
-- edit "FontViewerPanel.xaml.cs"
-- edit "Plugin.cs"
-
-QuickLook.Plugin - MarkdownViewer
-- edit "Plugin.cs"
-
-QuickLook.Plugin - OfficeViewer-Native
-- edit "Plugin.cs"
-
-QuickLook.Plugin - TextViewer
-- edit "TextViewerPanel.xaml.cs"
-
-QuickLook.Plugin - CsvViewer
-- edit "CsvViewerPanel.xaml.cs"
-
-QuickLook.Plugin - PdfViewer
-- edit "Plugin.cs"
-- remove 32 bit 
-
-remove QuickLook.Native - QuickLook.Native32 project
-
-remove QuickLook.Native - QuickLook.WoW64HookHelper project
-
-QuickLook.Native - QuickLook.Native64
-- edit lots of files
-
-QuickLook.Installer
-- Product.wxs
-
-QuickLook.Common
-- add "ExtensionMethod/WindowsThumbnailExtension.cs"
-- add "ExtensionMethod/EncondingExtensions.cs"
+### 3.6.5 -> 3.6.6 -> 3.6.7 -> 3.6.8 -> 3.6.9
 
 
 改进：
-1. 后台任务栏图标添加隐藏选项，选择隐藏后之后不会显示后台图标，加启动参数"/setvisible"后再次启动恢复，安装包自动增加的桌面和开始菜单快捷方式默认带"/setvisible"参数
+1. 后台任务栏图标添加隐藏选项，选择隐藏后之后开机自启不会再显示后台图标和通知，除非启动参数加"/setvisible"后。
+通过安装包自动增加的桌面和开始菜单快捷方式默认带"/setvisible"参数，即运行桌面或开始菜单的快捷方式会立刻或下次启动时（当前有QuickLook在运行）出现任务栏图标
 1. 修复预览.lnk快捷方式BUG （原版3.6.8版本也做了相同修改）
-1. 修复当预览有多张封面的mp3时无法预览问题,音频封面预览问题
+1. 修复当预览有多张封面的mp3时没有音频封面预览问题
 1. VideoViewer增加rmvb和bik格式预览
 1. ImageViewer增加dds,tga格式预览（3.6.8 更新支持tga了）
 1. 将外部插件整合进解决方案里，包括FontViewer,EpubViewer,OfficeViewer-Native
 1. 修改插件界面大小：FontViewer，OfficeViewer-Native，MarkdownViewer,PdfViewer,ImageViewer
 1. 修改FontViewer样例显示内容
-1. QuickLook项目添加监控桌面文件夹功能，作用是把公用桌面文件全部移动到用户桌面中
-1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化
-1. 将之前在VideoViewer添加的预览缩略图文件"WindowsThumbnailProvider.cs"移动在QuickLook.Common中并改名为"WindowsThumbnailExtension.cs"，并删除QuickLook原有的文件
+1. QuickLook项目添加监控桌面文件夹功能选项，作用是把公用桌面文件全部移动到用户桌面中，这样桌面就能严格按字母排序了
+1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化，存在问题：在64位系统运行的32位程序的dialog界面（选择文件或文件夹的弹窗，且必须是Windows提供的接口）无法开启预览，不过能遇到这情况的几率也很小
 1. ImageViewer读取不出heif图片大小时使用系统方法（升级到3.6.8不需要了）
 1. 更新MediaViewer里的MediaInfo和MediaInfo.Wrapper
 1. 添加音乐界面歌词显示
-1. 文本预览和csv预览能够正确识别gbk编码
+1. 文本预览和csv预览能够正确识别小文件的gbk或gb2312编码
+1. 修复媒体预览音量问题
 
 # QuickLook
 
