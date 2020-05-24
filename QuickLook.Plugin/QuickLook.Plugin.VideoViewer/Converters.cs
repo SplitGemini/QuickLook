@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -55,18 +56,47 @@ namespace QuickLook.Plugin.VideoViewer
             if (value == null)
                 return Volumes[0];
 
-            var v = (double)value;
-            if (Math.Abs(v) < 0.01)
+            var volume = (double)value;
+            var scaleValueFrom = 0.7;
+            var scaleValueTo = 0;
+
+            if (volume < scaleValueFrom)
                 return Volumes[0];
 
-            v = Math.Min(v, 1);
+            var k = (1 - scaleValueTo) / (1 - scaleValueFrom);
+            volume = scaleValueTo + k * (volume - scaleValueFrom);
+            volume = Math.Min(volume, 1);
 
-            return Volumes[1 + (int)(v / 0.34)];
+            return Volumes[1 + (int)(volume / 0.34)];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public sealed class VolumeConverter : DependencyObject, IValueConverter
+    {
+    
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return 1;
+            var volume = (double)value;
+            //scale volume from 0-1 to 0.7-1, if volume is too small, just set to 0;
+            if (Math.Abs(volume) < 0.01) return 0;
+            var scaleValueFrom = 0;
+            var scaleValueTo = 0.7;
+            var k = (1 - scaleValueTo) / (1 - scaleValueFrom);
+            volume = scaleValueTo + k * (volume - scaleValueFrom);
+            volume = Math.Min(volume, 1);
+            return volume;
         }
     }
 

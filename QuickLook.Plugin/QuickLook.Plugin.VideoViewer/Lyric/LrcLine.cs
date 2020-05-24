@@ -12,20 +12,15 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
         // https://en.wikipedia.org/wiki/LRC_(file_format)
 
         public TimeSpan? LrcTime { get; set; }
-
+        readonly int offset;
 
         public string LrcText { get; set; }
-
-        public LrcLine(double time, string text)
-        {
-            LrcTime = new TimeSpan(0, 0, 0, 0, ((int)(time * 1000) + LrcManager.offset) < 0 ? 0 : ((int)(time * 1000) + LrcManager.offset));
-            LrcText = text;
-        }
-        public LrcLine(TimeSpan? time, string text)
+        public LrcLine(TimeSpan? time, string text, int offset = 0)
         {
             if (time.HasValue)
             {
-                LrcTime = time + new TimeSpan(0, 0, 0, 0, LrcManager.offset);
+                this.offset = offset;
+                LrcTime = time + new TimeSpan(0, 0, 0, 0, offset);
                 if (TimeSpan.Compare(LrcTime.Value, TimeSpan.Zero) < 0)
                 {
                     LrcTime = TimeSpan.Zero;
@@ -34,27 +29,11 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
             LrcText = text;
         }
 
-        public LrcLine()
+        public static LrcLine Parse(string line, int offset)
         {
-            LrcTime = null;
-            LrcText = string.Empty;
-        }
-
-        public static LrcLine Parse(string line)
-        {
-            // 歌曲信息|[al:album]      | Time = null, Content = Info
-            // 空白行  |                | Time = null, Content = empty
+            // 只考虑正常歌词
             // 正常歌词|[00:00.000]Info | Time = time, Content = content
             // 空白歌词|[00:00.000]     | Time = time, Content = empty
-            // 多行歌词|[00:00.000][00:01.000]Info
-
-            // 判断是否为空白行
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                return Empty;
-            }
-            // 这里不考虑多行歌词的情况
-            if (CheckMultiLine(line)) throw new FormatException();
 
             // 此时只能为正常歌词
             var slices = line.TrimStart().TrimStart('[').Split(']');
@@ -67,7 +46,7 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
             }
 
             // 正常歌词和空白歌词不需要进行额外区分
-            return new LrcLine(time, slices[1]);
+            return new LrcLine(time, slices[1], offset);
 
         }
 
@@ -85,31 +64,6 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
             }
         }
 
-        public static bool TryParse(string line, out LrcLine lrcLine)
-        {
-            try
-            {
-                lrcLine = Parse(line);
-                return true;
-            }
-            catch
-            {
-                lrcLine = Empty;
-                return false;
-            }
-        }
-
-        public static readonly LrcLine Empty = new LrcLine();
-
-        /// <summary>
-        /// 判断是否为多行歌词
-        /// </summary>
-        public static bool CheckMultiLine(string line)
-        {
-            // 指的是从左侧第二个字符开始找，如果仍然能够找到“[”，则认为包含超过一个时间框
-            if (line.TrimStart().IndexOf('[', 1) != -1) return true;
-            else return false;
-        }
 
         public int CompareTo(LrcLine other)
         {

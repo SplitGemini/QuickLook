@@ -14,6 +14,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <local:TimeTickToShortStringConverter x:Key="TimeTickToShortStringConverter" />
             <local:VolumeToIconConverter x:Key="VolumeToIconConverter" />
+            <local:VolumeConverter x:Key="VolumeConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -202,8 +203,8 @@
         <Grid x:Name="volumeSliderLayer" Background="Transparent" Visibility="Collapsed">
             <Grid Height="32" Width="130" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                   Background="{DynamicResource CaptionButtonHoverBackground}" Margin="0,0,0,32">
-                <Slider Style="{StaticResource CustomSliderStyle}" Width="110" Maximum="1"
-                        Value="{Binding ElementName=mediaElement, Path=Volume}" />
+                <Slider x:Name="volumeSlider" Style="{StaticResource CustomSliderStyle}" Width="110" Maximum="1"
+                        Value="{Binding ElementName=mediaElement, Path=Volume, Converter={StaticResource VolumeConverter}, Mode=OneWayToSource}" />
             </Grid>
         </Grid>
     </Grid>

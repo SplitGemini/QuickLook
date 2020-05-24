@@ -178,13 +178,12 @@ namespace QuickLook.Plugin.VideoViewer
         public void Dispose()
         {
             // old plugin use an int-typed "Volume" config key ranged from 0 to 100. Let's use a new one here.
-            SettingHelper.Set("VolumeDouble", mediaElement.Volume);
+            SettingHelper.Set("VolumeDouble", volumeSlider.Value);
             SettingHelper.Set("ShouldLoop", ShouldLoop);
-
             try
             {
                 mediaElement?.Close();
-
+                
                 Task.Run(() =>
                 {
                     mediaElement?.MediaUriPlayer.Dispose();
@@ -235,20 +234,9 @@ namespace QuickLook.Plugin.VideoViewer
                 return;
 
             mediaElement.MediaPosition = 0;
-            if (ShouldLoop)
-            {
-                IsPlaying = true;
-
-                mediaElement.Play();
-                //add by gh
-                if(!HasVideo && !isNullLyric)
-                    Timer.Start();
-                //--------//
-            }
-            else
+            if (!ShouldLoop)
             {
                 IsPlaying = false;
-                
                 mediaElement.Pause();
                 //add by gh
                 if (!HasVideo && !isNullLyric)
@@ -293,20 +281,13 @@ namespace QuickLook.Plugin.VideoViewer
         }
 
         //add by gh
-        private static string[] MusicExtensions = new string[] { ".mp3", ".wav", ".m4a", ".wma", ".aac", ".flac", ".ape", ".opus", ".ogg" };
+        //private static string[] MusicExtensions = new string[] { ".mp3", ".wav", ".m4a", ".wma", ".aac", ".flac", ".ape", ".opus", ".ogg" };
         bool isNullLyric = false;
         private void GetLyric(string filename)
         {
-            var lyricname = string.Empty;
-            foreach (var ext in MusicExtensions)
-            {
-                if (filename.EndsWith(ext))
-                {
-                    lyricname = filename.Replace(ext, ".lrc");
-                    break;
-                }
-            }
-            if (!lyricname.Equals(string.Empty) && File.Exists(lyricname))
+            var lyricname = filename.Replace(Path.GetExtension(filename), ".lrc");
+
+            if (!HasVideo && File.Exists(lyricname))
             {
                 if (!Manager.LoadFromFile(lyricname))
                     isNullLyric = true;
@@ -321,7 +302,9 @@ namespace QuickLook.Plugin.VideoViewer
                     if (!Manager.LoadFromText(lyric))
                         isNullLyric = true;
                 }
+                else isNullLyric = true;
             }
+            else isNullLyric = true;
         }
         //-----------------//
 
@@ -385,19 +368,28 @@ namespace QuickLook.Plugin.VideoViewer
 
         private void ChangeVolume(double delta)
         {
-            var newVol = mediaElement.Volume + delta;
-            newVol = Math.Max(newVol, 0);
-            newVol = Math.Min(newVol, 1);
-
-            mediaElement.Volume = newVol;
+            var volume = volumeSlider.Value + delta;
+            volume = Math.Max(volume, 0);
+            volume = Math.Min(volume, 1);
+            volumeSlider.Value = volume;
         }
 
         private void TogglePlayPause(object sender, EventArgs e)
         {
             if (mediaElement.IsPlaying)
+            {
                 mediaElement.Pause();
+                if (!HasVideo && !isNullLyric)
+                    Timer.Stop();
+            }
+
             else
+            {
                 mediaElement.Play();
+                if (!HasVideo && !isNullLyric)
+                    Timer.Start();
+            }
+                
         }
 
         private void ToggleShouldLoop(object sender, EventArgs e)
@@ -416,7 +408,7 @@ namespace QuickLook.Plugin.VideoViewer
 
             mediaElement.Source = new Uri(path);
             // old plugin use an int-typed "Volume" config key ranged from 0 to 100. Let's use a new one here.
-            mediaElement.Volume = SettingHelper.Get("VolumeDouble", 1d);
+            volumeSlider.Value = SettingHelper.Get("VolumeDouble", 1d);
 
             mediaElement.Play();
         }
