@@ -1,5 +1,7 @@
 <img src="https://user-images.githubusercontent.com/1687847/82130498-8c3eac80-97d4-11ea-9e88-372ab9c50295.png" width="80">
 
+
+
 ### 3.6.5 -> 3.6.6 -> 3.6.7 -> 3.6.8 -> 3.6.9
 
 以下都是基于最新QuickLook进行的修改
@@ -17,87 +19,17 @@
 1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化，存在的问题：在64位系统运行的32位程序的dialog界面（选择文件或文件夹的弹窗，且必须是Windows提供的接口）无法开启预览，不过能遇到这情况的几率也很小
 1. ImageViewer读取不出heif图片大小时使用系统方法（升级到3.6.8不需要了）
 1. 更新MediaViewer里的MediaInfo和MediaInfo.Wrapper
-1. 添加音乐界面歌词显示
-1. 文本预览和csv预览能够正确识别小文件的gbk或gb2312编码
-1. 修复媒体预览音量问题
+1. 添加音乐界面歌词显示，优先读取同目录同名lrc（所有音频文件），其次读取内嵌歌词（仅mp3），只显示有时间轴歌词，将忽略时间差10毫秒的翻译
+1. 文本预览和csv预览能够正确识别小文件的gbk或gb2312或其他编码，csv添加复制粘贴选项
+1. 修复媒体预览音量问题，即媒体播放器的音量数值不平均，解决方法是音量条0-1的数值将对应实际音量的0.88-1
+1. 删掉VideoViewer不需要的'IsPlaying'属性，修复Loop问题（暂停时改Loop设置会继续播放）
 
 
 
-# QuickLook
-
-[![license](https://img.shields.io/github/license/QL-Win/QuickLook.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![AppVeyor](https://img.shields.io/appveyor/ci/xupefei/QuickLook.svg)](https://ci.appveyor.com/project/xupefei/QuickLook)
-[![Github All Releases](https://img.shields.io/github/downloads/QL-Win/QuickLook/total.svg)](https://github.com/QL-Win/QuickLook/releases)
-[![GitHub release](https://img.shields.io/github/release/QL-Win/QuickLook.svg)](https://github.com/QL-Win/QuickLook/releases/latest)
-
-<img src="https://user-images.githubusercontent.com/1687847/64730506-2a60d100-d4e8-11e9-95a6-f13dbd869b2a.jpeg" width="400">
-
-## Background
-One of the few features I missed from macOS is [Quick Look](https://en.wikipedia.org/wiki/Quick_Look). It allows users to peek into a file content in lightning speed by just pressing the <kbd>Space</kbd> key. Windows, on the other hand, does not have this handy feature ... until now.
-
-I am aware that several alternatives are already available on the Internet (e.g. [WinQuickLook](https://github.com/shibayan/WinQuickLook) and [Seer](https://github.com/ccseer/Seer)). Despite these options, I still decided to craft another one by myself, because they are either not being actively developed, lack of variety, or ask for some :dollar:.
-
-## Highlights
-
- - Tons of supported file types (full list [here](https://github.com/QL-Win/QuickLook/wiki/Supported-File-Types))
- - Fluent design (new in version 0.3)
- - Touchscreen friendly
- - HiDPI support
- - Preview from *Open* and *Save File* Dialog
- - Preview from 3rd-party file managers (see a list [here](https://github.com/QL-Win/QuickLook/wiki/File-Managers))
- - Easily extended by [plugins](https://github.com/QL-Win/QuickLook/wiki/Available-Plugins)
- - Strict GPL license to keep it free forever
-
-## Usage
-
-### Download/Installation
-
-Get it from one of the following sources:
-
-  * Microsoft Store (Windows 10 users only, no preview in open/save-dialogs available) <a href="https://www.microsoft.com/store/apps/9nv4bs3l1h4s?ocid=badge" target="_blank"><img src="https://assets.windowsphone.com/13484911-a6ab-4170-8b7e-795c1e8b4165/English_get_L_InvariantCulture_Default.png" height="22px" alt="Store Link" /></a> 
-  * Installer or portable archive of the stable version from [GitHub Release](https://github.com/QL-Win/QuickLook/releases) 
-  * Nightly builds from [AppVeyor](https://ci.appveyor.com/project/xupefei/quicklook/build/artifacts)
-
-[What are the differences between `.msi`, `.zip`, Nightly and Store versions?](https://github.com/QL-Win/QuickLook/wiki/Differences-Between-Distributions)
-
-**Note:** Don't forget to check out the [plugins](https://github.com/QL-Win/QuickLook/wiki/Available-Plugins) for previewing office-files, epubs, fonts and more!
 
 
-### Typical usecase
 
-1. Run `QuickLook.exe` (only necessary if autostart is disabled)
-1. Select any file or folder (on the Desktop, in a File Explorer window, in an *Open* or *Save-File* dialogue, doesn't matter)
-1. Press <kbd>Spacebar</kbd>
-1. Enjoy the preview and interact with it
-1. Preview next file by clicking on it or using arrow-keys (arrow-keys move selection in the background if the preview window is not in focus)
-1. When you're done close it by either hitting <kbd>Spacebar</kbd> again, pressing <kbd>Esc</kbd> or clicking the `⨉` button
-
-### Hotkeys and buttons
-
- - <kbd>Spacebar</kbd> Show/Hide the preview window
- - <kbd>Esc</kbd> Hide the preview window
- - <kbd>Enter</kbd> Open/Execute current file
- - <kbd>Mouse</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> Preview another file
- - <kbd>Mouse Wheel</kbd> Zoom in/out (images)
- - <kbd>Ctrl</kbd>+<kbd>Mouse Wheel</kbd> Zoom in/out (PDFs)
- - <kbd>Wheel</kbd> Increase/decrease volume
-
-## Supported file types, file manager intergation, etc.
-
-See the [Wiki page](https://github.com/QL-Win/QuickLook/wiki)
-
-## Translations
-
-See the [Translation guide](https://github.com/QL-Win/QuickLook/wiki/Translations)
-
-## Thanks to
-
- - Many [open-source projects](https://github.com/QL-Win/QuickLook/wiki/On-the-Shoulders-of-Giants) and their contributors
- - Our UI designers [@OiCkilL](https://twitter.com/OiCkilL) (“Fluent” user interface since v0.3) and [@QubitsDev](https://twitter.com/qubitsdev) (application icon since v0.3)
- - [Our contributers](https://github.com/QL-Win/QuickLook/graphs/contributors) who
-     - teach QuickLook to speak *your* language
-     - send pull requests, report bugs or give suggestions
- - ... and you 😊
+原QuickLook链接：[QL-Win/QuickLook](https://github.com/QL-Win/QuickLook)
 
 ## Licenses
 
