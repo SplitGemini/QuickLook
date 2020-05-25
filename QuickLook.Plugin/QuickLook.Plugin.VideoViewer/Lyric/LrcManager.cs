@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using QuickLook.Common.ExtensionMethods;
+
+
 
 namespace QuickLook.Plugin.VideoViewer.Lyric
 {
@@ -14,6 +15,7 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
     {
         public List<LrcLine> LrcList = new List<LrcLine>();
         int offset = 0;
+        
 
         public bool LoadFromFile(string filename)
         {
@@ -79,7 +81,8 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
                         // 常规的单行歌词 [00:00.000]
                         else if (matches.Count == 1)
                         {
-                            LrcList.Add(LrcLine.Parse(line, offset));
+                            var lrc = reLyric.Match(line).ToString();
+                            LrcList.Add(new LrcLine(TimeSpan.Parse("00:" + matches[0].ToString().Trim('[', ']')), lrc, offset));
                         }
                         // 说明这是一个偏移
                         else if (reLrcOffSet.IsMatch(line))
@@ -115,10 +118,24 @@ namespace QuickLook.Plugin.VideoViewer.Lyric
                 .Where(x => x.LrcTime != null)
                 .Where(x => x.LrcTime <= time)
                 .OrderBy(x => x.LrcTime)
-                .Reverse()
-                .Select(x => x.LrcText)
-                .ToList();
-            if (list.Count > 0) return list[0];
+                .Reverse();
+            
+            if (list.Count() > 0)
+            {
+                var tmpList = LrcList.OrderBy(x => x.LrcTime).ToList();
+                int index = tmpList.FindIndex(delegate (LrcLine line)
+                {
+                    return line.LrcTime.Equals(list.First().LrcTime) && line.LrcText.Equals(list.First().LrcText);
+                });
+                var tmp = new LrcLine(null, string.Empty);
+                //当前歌词和下句歌词间距非常短，表示当前歌词是翻译，直接显示下一句歌词
+                if (tmpList.ElementAtOrDefault(index + 1) != null &&
+                    tmpList.ElementAtOrDefault(index + 1).LrcTime - tmpList.ElementAtOrDefault(index).LrcTime < new TimeSpan(0, 0, 0, 0, 20))
+                {
+                    return (tmpList.ElementAtOrDefault(index + 1) ?? tmp).LrcText;
+                }
+                else return (tmpList.ElementAtOrDefault(index) ?? tmp).LrcText;
+            }
             else return string.Empty;
         }
 

@@ -57,7 +57,7 @@ namespace QuickLook.Plugin.VideoViewer
                 return Volumes[0];
 
             var volume = (double)value;
-            var scaleValueFrom = 0.7;
+            var scaleValueFrom = 0.88;
             var scaleValueTo = 0;
 
             if (volume < scaleValueFrom)
@@ -89,10 +89,10 @@ namespace QuickLook.Plugin.VideoViewer
             if (value == null)
                 return 1;
             var volume = (double)value;
-            //scale volume from 0-1 to 0.7-1, if volume is too small, just set to 0;
+            //scale volume from range scaleValueFrom-1 to range scaleValueTo-1, if volume is too small, just set to 0;
             if (Math.Abs(volume) < 0.01) return 0;
             var scaleValueFrom = 0;
-            var scaleValueTo = 0.7;
+            var scaleValueTo = 0.88;
             var k = (1 - scaleValueTo) / (1 - scaleValueFrom);
             volume = scaleValueTo + k * (volume - scaleValueFrom);
             volume = Math.Min(volume, 1);

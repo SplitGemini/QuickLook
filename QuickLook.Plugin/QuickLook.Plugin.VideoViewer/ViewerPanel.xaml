@@ -87,7 +87,7 @@
                            Foreground="{DynamicResource WindowTextForeground}"
                            Text="{Binding ElementName=mediaElement, Path=MediaDuration, Converter={StaticResource TimeTickToShortStringConverter}}" />
                 <!-- add by gh -->
-                <TextBlock x:Name="metaLyric" Grid.Row="6" FontSize="14" Padding="3" TextTrimming="CharacterEllipsis"
+                <TextBlock Grid.Row="6" FontSize="14" Padding="3" TextTrimming="CharacterEllipsis"
                            Foreground="{DynamicResource WindowTextForeground}"
                            Text="{Binding Lyric, ElementName=viewerPanel}" TextWrapping="Wrap"/>
                 <!--           -->
@@ -143,7 +143,7 @@
                         <Style TargetType="Button" BasedOn="{StaticResource ControlButtonStyle}">
                             <Setter Property="Content" Value="&#xE769;" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsPlaying, ElementName=viewerPanel}"
+                                <DataTrigger Binding="{Binding ElementName=mediaElement, Path=IsPlaying}"
                                              Value="False">
                                     <Setter Property="Content" Value="&#xE768;" />
                                 </DataTrigger>

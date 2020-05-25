@@ -2,7 +2,7 @@
 
 ### 3.6.5 -> 3.6.6 -> 3.6.7 -> 3.6.8 -> 3.6.9
 
-
+以下都是基于最新QuickLook进行的修改
 改进：
 1. 后台任务栏图标添加隐藏选项，选择隐藏后之后开机自启不会再显示后台图标和通知，除非启动参数加"/setvisible"后。
 通过安装包自动增加的桌面和开始菜单快捷方式默认带"/setvisible"参数，即运行桌面或开始菜单的快捷方式会立刻或下次启动时（当前有QuickLook在运行）出现任务栏图标
@@ -11,15 +11,17 @@
 1. VideoViewer增加rmvb和bik格式预览
 1. ImageViewer增加dds,tga格式预览（3.6.8 更新支持tga了）
 1. 将外部插件整合进解决方案里，包括FontViewer,EpubViewer,OfficeViewer-Native
-1. 修改插件界面大小：FontViewer，OfficeViewer-Native，MarkdownViewer,PdfViewer,ImageViewer
+1. 修改插件界面大小：FontViewer，OfficeViewer-Native，MarkdownViewer,PdfViewer,ImageViewer等
 1. 修改FontViewer样例显示内容
 1. QuickLook项目添加监控桌面文件夹功能选项，作用是把公用桌面文件全部移动到用户桌面中，这样桌面就能严格按字母排序了
-1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化，存在问题：在64位系统运行的32位程序的dialog界面（选择文件或文件夹的弹窗，且必须是Windows提供的接口）无法开启预览，不过能遇到这情况的几率也很小
+1. 删除Native32和WoW64HookHelper项目，修改QuickLook、Native64、VideoViewer、PdfViewer,ImageViewer的文件，试图将QuickLook完全64位化，存在的问题：在64位系统运行的32位程序的dialog界面（选择文件或文件夹的弹窗，且必须是Windows提供的接口）无法开启预览，不过能遇到这情况的几率也很小
 1. ImageViewer读取不出heif图片大小时使用系统方法（升级到3.6.8不需要了）
 1. 更新MediaViewer里的MediaInfo和MediaInfo.Wrapper
 1. 添加音乐界面歌词显示
 1. 文本预览和csv预览能够正确识别小文件的gbk或gb2312编码
 1. 修复媒体预览音量问题
+
+
 
 # QuickLook
 
