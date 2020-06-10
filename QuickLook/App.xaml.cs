@@ -157,7 +157,6 @@ namespace QuickLook
             if (e.Args.Contains("/first"))
             {
                 AutoStartupHelper.CreateAutorunShortcut();
-                SettingHelper.Set("Visible", true);
             }
             //----------//
 

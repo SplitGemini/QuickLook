@@ -47,14 +47,13 @@ namespace QuickLook
         {
             _watcher.Changed -= _onProcess;
             _watcher.Created -= _onProcess;
-            MoveFiles();
+            Task.Delay(2000).ContinueWith(_ => MoveFiles());
             _watcher.Changed += _onProcess;
             _watcher.Created += _onProcess;
         }
 
         private static void MoveFiles()
         {
-            System.Threading.Thread.Sleep(2000);
             if (Directory.Exists(publicDesktopPath))
             {
                 string[] files = Directory.GetFiles(publicDesktopPath);
