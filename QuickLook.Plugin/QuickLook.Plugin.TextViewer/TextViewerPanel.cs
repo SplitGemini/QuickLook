@@ -159,10 +159,15 @@ namespace QuickLook.Plugin.TextViewer
                 var bufferCopy = buffer.ToArray();
                 buffer.Dispose();
 
-                //edit by gh
+                //edit by gh - 接近小文件识别编码可能失败问题
                 //var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
                 //Encoding.Default;
-                var encoding = EncodingExtensions.GetEncoding(path, maxLength);
+                var encoding = Encoding.Default;
+                _context.Title += " ，长度：" + bufferCopy.Length.ToString();
+                if (bufferCopy.Length <= 1000)
+                    encoding = EncodingExtensions.GetEncoding(path, 0);
+                else
+                    encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.Default;
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));
