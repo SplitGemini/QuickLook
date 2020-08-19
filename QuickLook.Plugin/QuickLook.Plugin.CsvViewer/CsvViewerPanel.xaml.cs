@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,6 +29,7 @@ using CsvHelper;
 using QuickLook.Common.ExtensionMethods;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
+using CsvHelper.Configuration;
 
 namespace QuickLook.Plugin.CsvViewer
 {
@@ -62,7 +64,7 @@ namespace QuickLook.Plugin.CsvViewer
 
                 //edit by gh
                 //var conf = new CsvHelper.Configuration.Configuration() {MissingFieldFound = null, BadDataFound = null};
-                var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null };
+                var conf = new CsvConfiguration(CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null };
                 //-------------------//
 
                 using (var parser = new CsvParser(sr, conf))

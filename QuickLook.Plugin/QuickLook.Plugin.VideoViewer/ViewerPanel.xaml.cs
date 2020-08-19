@@ -81,8 +81,8 @@ namespace QuickLook.Plugin.VideoViewer
             mediaElement.MediaEnded += MediaEnded;
             mediaElement.MediaFailed += MediaFailed;
 
-            buttonPlayPause.Click += TogglePlayPause;
-            buttonLoop.Click += ToggleShouldLoop;
+            //buttonPlayPause.Click += TogglePlayPause;
+            //buttonLoop.Click += ToggleShouldLoop;
             buttonTime.Click += (sender, e) => buttonTime.Tag = (string) buttonTime.Tag == "Time" ? "Length" : "Time";
             buttonMute.Click += (sender, e) => volumeSliderLayer.Visibility = Visibility.Visible;
             volumeSliderLayer.MouseDown += (sender, e) => volumeSliderLayer.Visibility = Visibility.Collapsed;
@@ -343,7 +343,7 @@ namespace QuickLook.Plugin.VideoViewer
             volumeSlider.Value = volume;
         }
 
-        private void TogglePlayPause(object sender, EventArgs e)
+        private void TogglePlayPause(object sender, RoutedEventArgs e)
         {
             if (mediaElement.IsPlaying)
             {
@@ -361,7 +361,7 @@ namespace QuickLook.Plugin.VideoViewer
                 
         }
 
-        private void ToggleShouldLoop(object sender, EventArgs e)
+        private void ToggleShouldLoop(object sender, RoutedEventArgs e)
         {
             ShouldLoop = !ShouldLoop;
         }

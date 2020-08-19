@@ -162,7 +162,7 @@ namespace QuickLook.Plugin.TextViewer
                 //edit by gh
                 //var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
                 //Encoding.Default;
-                var encoding = EncodingExtensions.GetEncoding(path);
+                var encoding = EncodingExtensions.GetEncoding(path, maxLength);
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));

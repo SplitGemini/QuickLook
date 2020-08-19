@@ -138,7 +138,7 @@
                 </glassLayer:GlassLayer.Style>
             </glassLayer:GlassLayer>
             <DockPanel Margin="8,0,8,0">
-                <Button x:Name="buttonPlayPause" ToolTip="Play/Pause" DockPanel.Dock="Left">
+                <Button x:Name="buttonPlayPause" ToolTip="Play/Pause" DockPanel.Dock="Left" Click="TogglePlayPause">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource ControlButtonStyle}">
                             <Setter Property="Content" Value="&#xE769;" />
@@ -151,7 +151,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button x:Name="buttonLoop" ToolTip="Loop" DockPanel.Dock="Left">
+                <Button x:Name="buttonLoop" ToolTip="Loop" DockPanel.Dock="Left" Click="ToggleShouldLoop">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource ControlButtonStyle}">
                             <Setter Property="Content" Value="&#xE8D8;" />
