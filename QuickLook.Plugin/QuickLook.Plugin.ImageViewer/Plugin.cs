@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
@@ -28,10 +27,10 @@ namespace QuickLook.Plugin.ImageViewer
 {
     public class Plugin : IViewer
     {
-        private static readonly string[] Formats =
+        private static readonly HashSet<string> Formats = new HashSet<string>(new[]
         {
             // camera raw ,add dds - add by gh
-            ".ari", ".arw", ".bay", ".crw", ".cr2", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".fff",
+            ".ari", ".arw", ".bay", ".crw", ".cr2", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".exr",".fff",
             ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
             ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f", ".dds",
             // normal
@@ -39,7 +38,7 @@ namespace QuickLook.Plugin.ImageViewer
             ".webp", ".pbm", ".pgm", ".ppm", ".pnm", ".svg", ".emf", ".wmf",
             // animated
             ".png", ".apng", ".gif"
-        };
+        });
         private ImagePanel _ip;
         private MetaProvider _meta;
 
@@ -63,7 +62,7 @@ namespace QuickLook.Plugin.ImageViewer
 
         public bool CanHandle(string path)
         {
-            return !Directory.Exists(path) && Formats.Any(path.ToLower().EndsWith);
+            return !Directory.Exists(path) && Formats.Contains(Path.GetExtension(path.ToLower()));
         }
 
         public void Prepare(string path, ContextObject context)

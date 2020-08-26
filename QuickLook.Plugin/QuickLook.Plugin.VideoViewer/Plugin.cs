@@ -17,7 +17,7 @@
 
 using System;
 using System.IO;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
 using MediaInfo;
@@ -27,16 +27,16 @@ namespace QuickLook.Plugin.VideoViewer
 {
     public class Plugin : IViewer
     {
-        private static readonly string[] Formats =
+        private static readonly HashSet<string> Formats = new HashSet<string>(new[]
         {
             // video - add rmvb, bik by gh
             ".3g2", ".3gp", ".3gp2", ".3gpp", ".amv", ".asf", ".asf", ".avi", ".flv", ".mts", ".m2ts", ".m4v", ".mkv",
-            ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",".rmvb",".bik",
+            ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",".mxf", ".rmvb", ".bik",
             // audio
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aif", ".aiff", ".amr", ".ape", ".au", ".awb", ".dct", ".dss", ".dvf",
             ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".m4r", ".mmf", ".mp3", ".mpc", ".msv", ".ogg",
-            ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".tta", ".vox", ".wav", ".wma", ".wv", ".webm"
-        };
+            ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".tta", ".vox", ".wav", ".wma", ".wv", ".weba"
+        });
 
         private ContextObject _context;
         private MediaInfo.MediaInfo _mediaInfo;
