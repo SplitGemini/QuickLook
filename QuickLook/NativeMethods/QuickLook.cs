@@ -25,7 +25,7 @@ namespace QuickLook.NativeMethods
 {
     internal static class QuickLook
     {
-        private const int MaxPath = 8192;
+        private const int MaxPath = 32767;
 
         //comment by gh
         /*

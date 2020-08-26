@@ -252,7 +252,6 @@ namespace QuickLook.Plugin.VideoViewer
         }
 
         //add by gh
-        //private static string[] MusicExtensions = new string[] { ".mp3", ".wav", ".m4a", ".wma", ".aac", ".flac", ".ape", ".opus", ".ogg" };
         bool isNullLyric = false;
         private void GetLyric(string filename)
         {
@@ -262,7 +261,7 @@ namespace QuickLook.Plugin.VideoViewer
             {
                 isNullLyric = !Manager.LoadFromFile(lyricname);
             }
-            else if (filename.EndsWith(".mp3"))   //一般只有mp3采用id2tag
+            else   //否则使用taglib获取
             {
                 var file = TagLib.File.Create(filename);
                 var lyric = file.Tag.Lyrics;
@@ -273,7 +272,6 @@ namespace QuickLook.Plugin.VideoViewer
                 }
                 else isNullLyric = true;
             }
-            else isNullLyric = true;
         }
         //-----------------//
 

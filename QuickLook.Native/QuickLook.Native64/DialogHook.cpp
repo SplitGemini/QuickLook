@@ -57,12 +57,12 @@ void DialogHook::GetSelected(PWCHAR buffer)
 	if (!IsWow64Process(GetCurrentProcess(), &isSelfWoW64))
 		return;
 
-	
+	// if self is 64bit and target is 32bit, do this
+	// less to use at wow64 app dialog windows
 	if (isTargetWoW64 && !isSelfWoW64)
 	{
-		// if self is 64bit and target is 32bit, do this
-		// less to use at wow64 app dialog windows
 		//GetSelectedFromWoW64HookHelper(buffer);
+		//ignore
 	}
 	else
 	{
@@ -73,7 +73,8 @@ void DialogHook::GetSelected(PWCHAR buffer)
 			return;
 
 		SendMessage(hwndfg, WM_HOOK_NOTIFY, 0, 0);
-		wcscpy_s(buffer, MAX_PATH, filePathBuffer);
+		//wcscpy_s(buffer, MAX_PATH, filePathBuffer);
+		GetLongPathName(filePathBuffer, buffer, MAX_PATH_EX);
 	}
 	
 }
