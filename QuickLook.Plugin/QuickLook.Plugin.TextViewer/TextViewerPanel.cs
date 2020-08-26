@@ -162,12 +162,12 @@ namespace QuickLook.Plugin.TextViewer
                 //edit by gh - 接近小文件识别编码可能失败问题
                 //var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
                 //Encoding.Default;
-                var encoding = Encoding.Default;
+                var encoding = Encoding.UTF8;
                 _context.Title += " ，长度：" + bufferCopy.Length.ToString();
                 if (bufferCopy.Length <= 1000)
                     encoding = EncodingExtensions.GetEncoding(path, 0);
                 else
-                    encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.Default;
+                    encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.UTF8;
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));

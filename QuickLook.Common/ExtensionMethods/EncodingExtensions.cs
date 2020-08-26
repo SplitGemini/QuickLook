@@ -20,19 +20,17 @@ namespace QuickLook.Common.ExtensionMethods
             // 'taster' = number of bytes to check of the file (to save processing). Higher
             // value is slower, but more reliable (especially UTF-8 with special characters
             // later on may appear to be ASCII initially). If taster = 0, then taster
-            // becomes the length of the file (for maximum reliability). 'text' is simply
-            // the string with the discovered encoding applied to the file.
-            string text;
+            // becomes the length of the file (for maximum reliability).
             byte[] b = File.ReadAllBytes(filename);
 
             //////////////// First check the low hanging fruit by checking if a
             //////////////// BOM/signature exists (sourced from http://www.unicode.org/faq/utf_bom.html#bom4)
-            if (b.Length >= 4 && b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) { text = Encoding.GetEncoding("utf-32BE").GetString(b, 4, b.Length - 4); return Encoding.GetEncoding("utf-32BE"); }  // UTF-32, big-endian 
-            else if (b.Length >= 4 && b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) { text = Encoding.UTF32.GetString(b, 4, b.Length - 4); return Encoding.UTF32; }    // UTF-32, little-endian
-            else if (b.Length >= 2 && b[0] == 0xFE && b[1] == 0xFF) { text = Encoding.BigEndianUnicode.GetString(b, 2, b.Length - 2); return Encoding.BigEndianUnicode; }     // UTF-16, big-endian
-            else if (b.Length >= 2 && b[0] == 0xFF && b[1] == 0xFE) { text = Encoding.Unicode.GetString(b, 2, b.Length - 2); return Encoding.Unicode; }              // UTF-16, little-endian
-            else if (b.Length >= 3 && b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) { text = Encoding.UTF8.GetString(b, 3, b.Length - 3); return Encoding.UTF8; } // UTF-8
-            else if (b.Length >= 3 && b[0] == 0x2b && b[1] == 0x2f && b[2] == 0x76) { text = Encoding.UTF7.GetString(b, 3, b.Length - 3); return Encoding.UTF7; } // UTF-7
+            if (b.Length >= 4 && b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) { return Encoding.GetEncoding("utf-32BE"); }  // UTF-32, big-endian 
+            else if (b.Length >= 4 && b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) { return Encoding.UTF32; }    // UTF-32, little-endian
+            else if (b.Length >= 2 && b[0] == 0xFE && b[1] == 0xFF) { return Encoding.BigEndianUnicode; }     // UTF-16, big-endian
+            else if (b.Length >= 2 && b[0] == 0xFF && b[1] == 0xFE) { return Encoding.Unicode; }              // UTF-16, little-endian
+            else if (b.Length >= 3 && b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) { return Encoding.UTF8; } // UTF-8
+            else if (b.Length >= 3 && b[0] == 0x2b && b[1] == 0x2f && b[2] == 0x76) { return Encoding.UTF7; } // UTF-7
 
 
             //////////// If the code reaches here, no BOM/signature was found, so now
@@ -61,7 +59,6 @@ namespace QuickLook.Common.ExtensionMethods
             }
             if (utf8 == true)
             {
-                text = Encoding.UTF8.GetString(b);
                 return Encoding.UTF8;
             }
 
@@ -72,10 +69,10 @@ namespace QuickLook.Common.ExtensionMethods
             double threshold = 0.1; // proportion of chars step 2 which must be zeroed to be diagnosed as utf-16. 0.1 = 10%
             int count = 0;
             for (int n = 0; n < taster; n += 2) if (b[n] == 0) count++;
-            if (((double)count) / taster > threshold) { text = Encoding.BigEndianUnicode.GetString(b); return Encoding.BigEndianUnicode; }
+            if (((double)count) / taster > threshold) { return Encoding.BigEndianUnicode; }
             count = 0;
             for (int n = 1; n < taster; n += 2) if (b[n] == 0) count++;
-            if (((double)count) / taster > threshold) { text = Encoding.Unicode.GetString(b); return Encoding.Unicode; } // (little-endian)
+            if (((double)count) / taster > threshold) { return Encoding.Unicode; } // (little-endian)
 
 
             // Finally, a long shot - let's see if we can find "charset=xyz" or
@@ -97,7 +94,6 @@ namespace QuickLook.Common.ExtensionMethods
                     try
                     {
                         string internalEnc = Encoding.ASCII.GetString(nb);
-                        text = Encoding.GetEncoding(internalEnc).GetString(b);
                         return Encoding.GetEncoding(internalEnc);
                     }
                     catch { break; }    // If C# doesn't recognize the name of the encoding, break.
@@ -109,8 +105,7 @@ namespace QuickLook.Common.ExtensionMethods
             // definitely) the user's local codepage! One might present to the user a
             // list of alternative encodings as shown here: http://stackoverflow.com/questions/8509339/what-is-the-most-common-encoding-of-each-language
             // A full list can be found using Encoding.GetEncodings();
-            text = Encoding.Default.GetString(b);
-            return Encoding.Default;
+            return Encoding.UTF8;
         }
     }
 }
