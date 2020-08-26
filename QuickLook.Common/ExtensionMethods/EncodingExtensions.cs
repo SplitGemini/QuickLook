@@ -105,7 +105,7 @@ namespace QuickLook.Common.ExtensionMethods
             // definitely) the user's local codepage! One might present to the user a
             // list of alternative encodings as shown here: http://stackoverflow.com/questions/8509339/what-is-the-most-common-encoding-of-each-language
             // A full list can be found using Encoding.GetEncodings();
-            return Encoding.UTF8;
+            return Encoding.Default;
         }
     }
 }

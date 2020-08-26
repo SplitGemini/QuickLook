@@ -31,6 +31,7 @@ using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using QuickLook.Common.ExtensionMethods;
 using UtfUnknown;
+using System.Diagnostics;
 
 namespace QuickLook.Plugin.TextViewer
 {
@@ -159,15 +160,8 @@ namespace QuickLook.Plugin.TextViewer
                 var bufferCopy = buffer.ToArray();
                 buffer.Dispose();
 
-                //edit by gh - 接近小文件识别编码可能失败问题
-                //var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ??
-                //Encoding.Default;
-                var encoding = Encoding.UTF8;
-                _context.Title += " ，长度：" + bufferCopy.Length.ToString();
-                if (bufferCopy.Length <= 1000)
-                    encoding = EncodingExtensions.GetEncoding(path, 0);
-                else
-                    encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.UTF8;
+                //edit by gh - 接近小文件识别编码可能失败问题，恢复原版，暂时无解
+                var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.UTF8;
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));
