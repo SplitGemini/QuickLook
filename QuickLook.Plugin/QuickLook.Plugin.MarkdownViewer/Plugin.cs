@@ -24,7 +24,7 @@ using System.Windows;
 using System.Windows.Threading;
 using QuickLook.Common.Plugin;
 using QuickLook.Plugin.HtmlViewer;
-using UtfUnknown;
+using QuickLook.Common.ExtensionMethods;
 
 namespace QuickLook.Plugin.MarkdownViewer
 {
@@ -72,7 +72,7 @@ namespace QuickLook.Plugin.MarkdownViewer
         private string GenerateMarkdownHtml(string path)
         {
             var bytes = File.ReadAllBytes(path);
-            var encoding = CharsetDetector.DetectFromBytes(bytes).Detected?.Encoding ?? Encoding.Default;
+            var encoding = EncodingExtensions.GetEncoding(path, bytes.Length);
 
             var md = encoding.GetString(bytes);
             md = WebUtility.HtmlEncode(md);

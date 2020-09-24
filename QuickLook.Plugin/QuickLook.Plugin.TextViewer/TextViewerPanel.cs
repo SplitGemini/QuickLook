@@ -30,8 +30,6 @@ using ICSharpCode.AvalonEdit.Rendering;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using QuickLook.Common.ExtensionMethods;
-using UtfUnknown;
-using System.Diagnostics;
 
 namespace QuickLook.Plugin.TextViewer
 {
@@ -134,23 +132,21 @@ namespace QuickLook.Plugin.TextViewer
             Task.Run(() =>
             {
                 const int maxLength = 5 * 1024 * 1024;
+                
                 var buffer = new MemoryStream();
                 bool tooLong;
-
-                using (var s = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    tooLong = s.Length > maxLength;
-                    while (s.Position < s.Length && buffer.Length < maxLength)
+                    var lb = new byte[8192];
+                    tooLong = fs.Length > maxLength;
+                    while (fs.Position < fs.Length && buffer.Length < maxLength)
                     {
                         if (_disposed)
                             break;
-
-                        var lb = new byte[8192];
-                        var count = s.Read(lb, 0, lb.Length);
-                        buffer.Write(lb, 0, count);
+                        int len = fs.Read(lb, 0, lb.Length);
+                        buffer.Write(lb, 0, len);
                     }
                 }
-
                 if (_disposed)
                     return;
 
@@ -159,9 +155,10 @@ namespace QuickLook.Plugin.TextViewer
 
                 var bufferCopy = buffer.ToArray();
                 buffer.Dispose();
-
-                //edit by gh - 接近小文件识别编码可能失败问题，恢复原版，暂时无解
-                var encoding = CharsetDetector.DetectFromBytes(bufferCopy).Detected?.Encoding ?? Encoding.UTF8;
+                
+                //edit by gh -   
+                //使用NChardet解决大部分编码识别问题
+                var encoding = EncodingExtensions.GetEncoding(path, bufferCopy.Length);
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));
@@ -180,5 +177,6 @@ namespace QuickLook.Plugin.TextViewer
                 }), DispatcherPriority.Render);
             });
         }
+
     }
 }
