@@ -16,6 +16,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DefineConstants>PackageDir=$(SolutionDir)Build\Package\</DefineConstants>
+    <Cultures>
+    </Cultures>
+    <SuppressAllWarnings>True</SuppressAllWarnings>
+    <Pedantic>False</Pedantic>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="C_QuickLookComponents.wxs" />

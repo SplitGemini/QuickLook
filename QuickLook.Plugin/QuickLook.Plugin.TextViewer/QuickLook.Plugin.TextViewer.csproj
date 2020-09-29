@@ -106,6 +106,7 @@
     <Content Include="Syntax\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Translations.config">
       <SubType>Designer</SubType>

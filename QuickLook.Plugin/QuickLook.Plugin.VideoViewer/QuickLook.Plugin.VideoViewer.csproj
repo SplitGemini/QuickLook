@@ -200,6 +200,7 @@
     <Content Include="LAVFilters-0.74.1-x64\LAVAudio.ax">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="LAVFilters-0.74.1-x64\LAVFilters.Dependencies.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

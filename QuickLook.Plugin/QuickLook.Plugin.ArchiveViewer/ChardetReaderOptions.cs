@@ -19,7 +19,7 @@ using System;
 using System.Text;
 using SharpCompress.Common;
 using SharpCompress.Readers;
-using UtfUnknown;
+using QuickLook.Common.ExtensionMethods;
 
 namespace QuickLook.Plugin.ArchiveViewer
 {
@@ -39,7 +39,7 @@ namespace QuickLook.Plugin.ArchiveViewer
 
             Array.Copy(bytes, index, buffer, 0, count);
 
-            var encoding = CharsetDetector.DetectFromBytes(buffer).Detected?.Encoding ?? Encoding.Default;
+            var encoding = EncodingExtensions.GetEncoding(buffer);
 
             return encoding.GetString(buffer);
         }

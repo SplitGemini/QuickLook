@@ -155,10 +155,11 @@ namespace QuickLook.Plugin.TextViewer
 
                 var bufferCopy = buffer.ToArray();
                 buffer.Dispose();
-                
+
                 //edit by gh -   
                 //使用NChardet解决大部分编码识别问题
                 var encoding = EncodingExtensions.GetEncoding(path, bufferCopy.Length);
+                //var encoding = EncodingExtensions.GetEncoding_utf(bufferCopy);
                 //-----------
 
                 var doc = new TextDocument(encoding.GetString(bufferCopy));
