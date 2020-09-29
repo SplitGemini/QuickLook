@@ -41,7 +41,9 @@ namespace QuickLook.Common.ExtensionMethods
                 }
             }
             detect.DataEnd();
-            var Detected = CharsetDetector.DetectFromStream(buffer).Detected;
+            var bufferCopy = buffer.ToArray();
+            buffer.Dispose();
+            var Detected = CharsetDetector.DetectFromBytes(bufferCopy).Detected;
             Debug.WriteLine("Confidence = " + Detected?.Confidence);
             if (Detected?.Confidence > 0.5)
             {
@@ -65,7 +67,6 @@ namespace QuickLook.Common.ExtensionMethods
                 }
                 
             }
-            buffer.Dispose();
             return encoding;
         }
         public static Encoding GetEncoding(byte[] buffer)
