@@ -1,4 +1,5 @@
 ﻿using NChardet;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -14,7 +15,11 @@ namespace QuickLook.Common.ExtensionMethods
         /// </summary>
         public static Encoding GetEncoding(string filename, int taster = 1000)
         {
-            
+            //unix 可能是识别失败，使用奇葩方法
+            if(filename.ToLower().EndsWith("yml") || filename.ToLower().EndsWith("log"))
+            {
+                return Encoding.UTF8;
+            }
             var encoding = Encoding.Default;
             Detector detect = new Detector();
             CharsetDetectionObserver cdo = new CharsetDetectionObserver();
@@ -29,6 +34,7 @@ namespace QuickLook.Common.ExtensionMethods
                 {
                     int len = fs.Read(lb, 0, lb.Length);
                     buffer.Write(lb, 0, len);
+
                     // 探测是否为 Ascii 编码
                     if (isAscii)
                         isAscii = detect.isAscii(lb, len);

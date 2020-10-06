@@ -23,9 +23,13 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Navigation;
+using QuickLook.Common.Helpers;
 using SHDocVw;
+using ContextMenu = System.Windows.Controls.ContextMenu;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using MenuItem = System.Windows.Controls.MenuItem;
 using WebBrowser = System.Windows.Controls.WebBrowser;
 
 namespace QuickLook.Plugin.HtmlViewer
@@ -48,7 +52,7 @@ namespace QuickLook.Plugin.HtmlViewer
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
-            };
+        };
 
             Content = _innerBrowser;
             _innerBrowser.Navigated += InnerBrowserNavigated;
