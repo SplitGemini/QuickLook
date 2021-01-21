@@ -1,4 +1,4 @@
-// Copyright © 2017 Paddy Xu
+// Copyright © 2021 Paddy Xu and Frank Becker
 // 
 // This file is part of QuickLook program.
 // 
@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -26,8 +25,8 @@ namespace QuickLook.Plugin.HtmlViewer
 {
     public class Plugin : IViewer
     {
-        private static readonly string[] Extensions = { ".mht", ".mhtml", ".htm", ".html" };
-        private static readonly string[] SupportedProtocols = { "http", "https" };
+        private static readonly string[] Extensions = {".mht", ".mhtml", ".htm", ".html"};
+        private static readonly string[] SupportedProtocols = {"http", "https"};
 
         private WebpagePanel _panel;
 
@@ -35,12 +34,14 @@ namespace QuickLook.Plugin.HtmlViewer
 
         public void Init()
         {
-            Helper.SetBrowserFeatureControl();
         }
 
         public bool CanHandle(string path)
         {
-            return !Directory.Exists(path) && (Extensions.Any(path.ToLower().EndsWith) || (path.ToLower().EndsWith(".url") && SupportedProtocols.Contains(Helper.GetUrlPath(path).Split(':')[0].ToLower())));
+            return !Directory.Exists(path) && (Extensions.Any(path.ToLower().EndsWith) ||
+                                               path.ToLower().EndsWith(".url") &&
+                                               SupportedProtocols.Contains(Helper.GetUrlPath(path).Split(':')[0]
+                                                   .ToLower()));
         }
 
         public void Prepare(string path, ContextObject context)
@@ -55,10 +56,8 @@ namespace QuickLook.Plugin.HtmlViewer
             context.Title = Path.IsPathRooted(path) ? Path.GetFileName(path) : path;
 
             if (path.ToLower().EndsWith(".url"))
-            {
                 path = Helper.GetUrlPath(path);
-            }
-            _panel.LoadFile(path);
+            _panel.NavigateToFile(path);
             _panel.Dispatcher.Invoke(() => { context.IsBusy = false; }, DispatcherPriority.Loaded);
         }
 

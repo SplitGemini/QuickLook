@@ -27,6 +27,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
+using ICSharpCode.AvalonEdit.Search;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using QuickLook.Common.ExtensionMethods;
@@ -67,6 +68,8 @@ namespace QuickLook.Plugin.TextViewer
 
             TextArea.TextView.ElementGenerators.Add(new TruncateLongLines());
 
+            SearchPanel.Install(this);
+
             LoadFileAsync(path);
         }
 
@@ -106,15 +109,15 @@ namespace QuickLook.Plugin.TextViewer
 
         private class TruncateLongLines : VisualLineElementGenerator
         {
-            const int maxLength = 10000;
-            const string ellipsis = "……………";
+            const int MAX_LENGTH = 10000;
+            const string ELLIPSIS = "……………";
 
             public override int GetFirstInterestedOffset(int startOffset)
             {
                 var line = CurrentContext.VisualLine.LastDocumentLine;
-                if (line.Length > maxLength)
+                if (line.Length > MAX_LENGTH)
                 {
-                    int ellipsisOffset = line.Offset + maxLength - ellipsis.Length;
+                    int ellipsisOffset = line.Offset + MAX_LENGTH - ELLIPSIS.Length;
                     if (startOffset <= ellipsisOffset)
                         return ellipsisOffset;
                 }
@@ -123,7 +126,7 @@ namespace QuickLook.Plugin.TextViewer
 
             public override VisualLineElement ConstructElement(int offset)
             {
-                return new FormattedTextElement(ellipsis, CurrentContext.VisualLine.LastDocumentLine.EndOffset - offset);
+                return new FormattedTextElement(ELLIPSIS, CurrentContext.VisualLine.LastDocumentLine.EndOffset - offset);
             }
         }
 
@@ -135,14 +138,14 @@ namespace QuickLook.Plugin.TextViewer
                 
                 var buffer = new MemoryStream();
                 bool tooLong;
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    var lb = new byte[8192];
                     tooLong = fs.Length > maxLength;
                     while (fs.Position < fs.Length && buffer.Length < maxLength)
                     {
                         if (_disposed)
                             break;
+                        var lb = new byte[8192];
                         int len = fs.Read(lb, 0, lb.Length);
                         buffer.Write(lb, 0, len);
                     }

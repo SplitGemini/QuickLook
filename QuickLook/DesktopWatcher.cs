@@ -16,6 +16,7 @@ namespace QuickLook
         private static readonly string publicDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
         private static readonly string userDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private static readonly FileSystemEventHandler _onProcess = new FileSystemEventHandler(OnProcess);
+        private static bool mutex = false;
         protected DesktopWatcher() {}
 
         public void WatcherStart()
@@ -45,11 +46,12 @@ namespace QuickLook
 
         private static void OnProcess(object source, FileSystemEventArgs e)
         {
-            _watcher.Changed -= _onProcess;
-            _watcher.Created -= _onProcess;
+            if (mutex)
+            {
+                return;
+            }
+            mutex = true;
             Task.Delay(2000).ContinueWith(_ => MoveFiles());
-            _watcher.Changed += _onProcess;
-            _watcher.Created += _onProcess;
         }
 
         private static void MoveFiles()
@@ -70,7 +72,7 @@ namespace QuickLook
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show("桌面监控出现问题：移动桌面文件," + e.Message, "出现问题");
+                            MessageBox.Show("桌面监控出现问题：移动桌面文件:" + e.Message, "出现问题");
                             break;
                         }
                     else
@@ -81,13 +83,14 @@ namespace QuickLook
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show("桌面监控出现问题：删除公用桌面文件," + e.Message, "出现问题");
+                            MessageBox.Show("桌面监控出现问题：删除公用桌面文件:" + e.Message, "出现问题");
                             break;
                         }
 
                     }
                 }
             }
+            mutex = false;
         }
         internal static DesktopWatcher GetInstance()
         {

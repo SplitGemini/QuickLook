@@ -31,6 +31,7 @@ namespace QuickLook
     /// </summary>
     public partial class App : Application
     {
+        public static readonly string LocalDataPath = SettingHelper.LocalDataPath;
         public static readonly string UserPluginPath = Path.Combine(SettingHelper.LocalDataPath, "QuickLook.Plugin\\");
         public static readonly string AppFullPath = Assembly.GetExecutingAssembly().Location;
         public static readonly string AppPath = Path.GetDirectoryName(AppFullPath);
@@ -183,7 +184,7 @@ namespace QuickLook
 
         private bool EnsureFirstInstance(string[] args)
         {
-            _isRunning = _isRunning = new Mutex(true, "QuickLook.App.Mutex", out bool isFirst);
+            _isRunning = new Mutex(true, "QuickLook.App.Mutex", out bool isFirst);
             if (isFirst)
                 return true;
 

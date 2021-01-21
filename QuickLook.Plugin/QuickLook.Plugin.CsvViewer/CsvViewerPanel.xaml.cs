@@ -30,6 +30,7 @@ using QuickLook.Common.ExtensionMethods;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using CsvHelper.Configuration;
+using System.Diagnostics;
 
 namespace QuickLook.Plugin.CsvViewer
 {
@@ -64,9 +65,41 @@ namespace QuickLook.Plugin.CsvViewer
 
                 //edit by gh
                 //var conf = new CsvHelper.Configuration.Configuration() {MissingFieldFound = null, BadDataFound = null};
-                var conf = new CsvConfiguration(CultureInfo.CurrentCulture) { MissingFieldFound = null, BadDataFound = null };
-                //-------------------//
+                CsvConfiguration conf = new CsvConfiguration(CultureInfo.CurrentCulture);
+                using (var csv = new CsvReader(sr, conf))
+                {
+                    var i = 0;
+                    while (csv.Read())
+                    {
+                        List<string> result = new List<string>();
+                        int k = 0;
+                        for (k = 0; csv.TryGetField<string>(k, out string value); k++)
+                        {
+                            result.Add(value);
+                        }
+                        if (!binded)
+                        {
+                            SetupColumnBinding(result.Count+1);
+                            binded = true;
+                        } else
+                        {
+                            //补位
+                            for(;k < dataGrid.Columns.Count; k++)
+                            {
+                                result.Add("");
+                            }
+                        }
+                        var row = Concat(new[] { $"{i++ + 1}".PadLeft(6) }, result.ToArray());
+                        if (i > limit)
+                        {
+                            Rows.Add(Enumerable.Repeat("...", row.Length).ToArray());
+                            break;
+                        }
 
+                        Rows.Add(row);
+                    }
+                }
+                /*
                 using (var parser = new CsvParser(sr, conf))
                 {
                     var i = 0;
@@ -92,6 +125,8 @@ namespace QuickLook.Plugin.CsvViewer
                         Rows.Add(row);
                     }
                 }
+                */
+                //-------------------//
             }
         }
 

@@ -1,7 +1,6 @@
-﻿using NChardet;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UtfUnknown;
 
@@ -15,78 +14,40 @@ namespace QuickLook.Common.ExtensionMethods
         /// </summary>
         public static Encoding GetEncoding(string filename, int taster = 1000)
         {
-            //unix 可能是识别失败，使用奇葩方法
-            if(filename.ToLower().EndsWith("yml") || filename.ToLower().EndsWith("log"))
+            /* 改为默认uf8奇葩方法保留
+            //unix 可能是识别失败，使用奇葩方法，常见代码默认utf-8
+            //黑名单自动识别
+            string[] black_list = { ".txt" };
+            if(!black_list.Any(filename.ToLower().EndsWith))
             {
                 return Encoding.UTF8;
             }
+            */
             var encoding = Encoding.Default;
-            Detector detect = new Detector();
-            CharsetDetectionObserver cdo = new CharsetDetectionObserver();
-            detect.Init(cdo);
             var buffer = new MemoryStream();
-            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var lb = new byte[8192];
-                bool done = false;
-                bool isAscii = true;
                 while (fs.Position < fs.Length && buffer.Length < taster)
                 {
+                    var lb = new byte[8192];
                     int len = fs.Read(lb, 0, lb.Length);
                     buffer.Write(lb, 0, len);
-
-                    // 探测是否为 Ascii 编码
-                    if (isAscii)
-                        isAscii = detect.isAscii(lb, len);
-
-                    // 如果不是 Ascii 编码，并且编码未确定，则继续探测
-                    if (!isAscii && !done)
-                        done = detect.DoIt(lb, len, false);
-                    //if (done)
-                        //break;
                 }
             }
-            detect.DataEnd();
             var bufferCopy = buffer.ToArray();
             buffer.Dispose();
             var Detected = CharsetDetector.DetectFromBytes(bufferCopy).Detected;
             Debug.WriteLine("Confidence = " + Detected?.Confidence);
             if (Detected?.Confidence > 0.5)
             {
-                encoding = Detected.Encoding ?? Encoding.Default;
+                encoding = Detected.Encoding ?? Encoding.UTF8;
                 Debug.WriteLine("UTF-UNKNOWN Charset = " + encoding.EncodingName);
                 return Detected.Encoding;
-            }
-            string[] prob = detect.getProbableCharsets();
-            if (prob.Length > 0)
-            {
-                try {
-                    encoding = Encoding.GetEncoding(prob[0]);
-                    foreach(var str in prob)
-                    {
-                        Debug.WriteLine("NChardet Probable Charset = " + str);
-                    }
-                }
-                catch
-                {
-                    encoding = Encoding.Default;
-                }
-                
-            }
-            return encoding;
+            } else return Encoding.UTF8;
         }
         public static Encoding GetEncoding(byte[] buffer)
         {
-            return CharsetDetector.DetectFromBytes(buffer).Detected?.Encoding ?? Encoding.Default;
-        }
-    }
-    public class CharsetDetectionObserver : ICharsetDetectionObserver
-    {
-        public string Charset = null;
-
-        public void Notify(string charset)
-        {
-            Charset = charset;
+            return CharsetDetector.DetectFromBytes(buffer).Detected?.Encoding ?? Encoding.UTF8;
         }
     }
     
