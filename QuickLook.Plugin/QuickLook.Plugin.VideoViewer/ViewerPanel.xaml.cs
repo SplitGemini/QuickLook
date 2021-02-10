@@ -257,7 +257,7 @@ namespace QuickLook.Plugin.VideoViewer
         {
             var lyricname = filename.Replace(Path.GetExtension(filename), ".lrc");
 
-            if (!HasVideo && File.Exists(lyricname))
+            if (File.Exists(lyricname))
             {
                 isNullLyric = !Manager.LoadFromFile(lyricname);
             }

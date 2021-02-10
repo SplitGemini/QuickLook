@@ -38,7 +38,7 @@ namespace QuickLook.Plugin.FontViewer
 
         public bool CanHandle(string path)
         {
-            string[] Extensions = { ".ttf", ".otf" };
+            string[] Extensions = { ".ttf", ".otf", ".ttc" };
 
             return !Directory.Exists(path) && Extensions.Any(path.ToLower().EndsWith);
         }
