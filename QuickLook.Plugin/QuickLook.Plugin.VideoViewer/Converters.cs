@@ -56,18 +56,13 @@ namespace QuickLook.Plugin.VideoViewer
             if (value == null)
                 return Volumes[0];
 
-            var volume = (double)value;
-            var scaleValueFrom = 0.88;
-            var scaleValueTo = 0;
-
-            if (volume < scaleValueFrom)
+            var v = (double)value;
+            if (Math.Abs(v) < 0.01)
                 return Volumes[0];
 
-            var k = (1 - scaleValueTo) / (1 - scaleValueFrom);
-            volume = scaleValueTo + k * (volume - scaleValueFrom);
-            volume = Math.Min(volume, 1);
+            v = Math.Min(v, 1);
 
-            return Volumes[1 + (int)(volume / 0.34)];
+            return Volumes[1 + (int)(v / 0.34)];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -76,28 +71,5 @@ namespace QuickLook.Plugin.VideoViewer
         }
     }
 
-    public sealed class VolumeConverter : DependencyObject, IValueConverter
-    {
-    
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return 1;
-            var volume = (double)value;
-            //scale volume from range scaleValueFrom-1 to range scaleValueTo-1, if volume is too small, just set to 0;
-            if (Math.Abs(volume) < 0.01) return 0;
-            var scaleValueFrom = 0;
-            var scaleValueTo = 0.88;
-            var k = (1 - scaleValueTo) / (1 - scaleValueFrom);
-            volume = scaleValueTo + k * (volume - scaleValueFrom);
-            volume = Math.Min(volume, 1);
-            return volume;
-        }
-    }
 
 }
