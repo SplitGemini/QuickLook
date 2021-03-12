@@ -30,7 +30,7 @@ namespace QuickLook.Plugin.ImageViewer
         private static readonly HashSet<string> Formats = new HashSet<string>(new[]
         {
             // camera raw ,add dds - add by gh
-            ".ari", ".arw", ".avif", ".bay", ".crw", ".cr2", ".cr3", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".exr",".fff",
+            ".apng", ".ari", ".arw", ".avif", ".bay", ".crw", ".cr2", ".cr3", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".exr",".fff",
             ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
             ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f", ".dds",
             // normal
