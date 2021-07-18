@@ -16,7 +16,7 @@ namespace QuickLook
         private static readonly string publicDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
         private static readonly string userDesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private static readonly FileSystemEventHandler _onProcess = new FileSystemEventHandler(OnProcess);
-        private static bool mutex = false;
+        private static volatile bool mutex = false;
         protected DesktopWatcher() {}
 
         public void WatcherStart()

@@ -27,24 +27,17 @@ namespace QuickLook.Plugin.VideoViewer
 {
     public class Plugin : IViewer
     {
-        private static readonly HashSet<string> Formats = new HashSet<string>(new[]
-        {
-            // video - add rmvb, bik by gh
-            ".3g2", ".3gp", ".3gp2", ".3gpp", ".amv", ".asf", ".avi", ".flv", ".mts", ".m2ts", ".m4v", ".mkv",
-            ".mov", ".mp4", ".mp4v", ".mpeg", ".mpg", ".ogv", ".qt", ".tp", ".ts", ".vob", ".webm", ".wmv",".mxf", ".rmvb", ".bik",
-            // audio
-            ".3gp", ".aa", ".aac", ".aax", ".act", ".aif", ".aiff", ".amr", ".ape", ".au", ".awb", ".dct", ".dss", ".dvf",
-            ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".m4r", ".mka", ".mmf", ".mp3", ".mpc", ".msv", ".ogg",
-            ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".tta", ".vox", ".wav", ".wma", ".wv", ".weba"
-        });
-
-        private ContextObject _context;
-        private MediaInfo.MediaInfo _mediaInfo;
+        private static MediaInfo.MediaInfo _mediaInfo;
 
         private ViewerPanel _vp;
 
-        public int Priority => -10; // make it lower than TextViewer
+        public int Priority => -3; // make it lower than TextViewer
 
+        static Plugin()
+        {
+            _mediaInfo = new MediaInfo.MediaInfo(Assembly.GetExecutingAssembly().Location);
+            _mediaInfo.Option("Cover_Data", "base64");
+        }
         public void Init()
         {
             QLVRegistry.Register();
@@ -52,44 +45,45 @@ namespace QuickLook.Plugin.VideoViewer
 
         public bool CanHandle(string path)
         {
-            return !Directory.Exists(path) && Formats.Contains(Path.GetExtension(path)?.ToLower());
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    _mediaInfo.Open(path);
+                    string videoCodec = _mediaInfo.Get(StreamKind.Video, 0, "Format");
+                    string audioCodec = _mediaInfo.Get(StreamKind.Audio, 0, "Format");
+                    // Note MediaInfo.Close seems to close the dll and you have to re-create the MediaInfo
+                    //      object like in the static class constructor above. Any call to Get methods etc.
+                    //      will result in a "Unable to load MediaInfo library" error.
+                    // Ref: https://github.com/MediaArea/MediaInfoLib/blob/master/Source/MediaInfoDLL/MediaInfoDLL.cs
+                    // Pretty sure it doesn't leak when opening another file as the c++ code calls Close on Open
+                    // Ref: https://github.com/MediaArea/MediaInfoLib/blob/master/Source/MediaInfo/MediaInfo_Internal.cpp
+                    if (videoCodec == "Unable to load MediaInfo library") // should not happen
+                    {
+                        return false;
+                    }
+                    if (!string.IsNullOrWhiteSpace(videoCodec) || !string.IsNullOrWhiteSpace(audioCodec))
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // return false;
+                }
+            }
+
+            return false;
         }
 
         public void Prepare(string path, ContextObject context)
         {
-            _context = context;
-
-            try
+            string videoCodec = _mediaInfo.Get(StreamKind.Video, 0, "Format");
+            if (!string.IsNullOrWhiteSpace(videoCodec)) // video
             {
-                //edit by gh
-                _mediaInfo = new MediaInfo.MediaInfo(Assembly.GetExecutingAssembly().Location);
-                //_mediaInfo = new MediaInfo.MediaInfo();
-                //_mediaInfo = new MediaInfo.MediaInfo(Path.Combine(
-                    //Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    //Environment.Is64BitProcess ? "MediaInfo-x64\\" : "MediaInfo-x86\\"));
-                //----------//
-
-                //comment by gh
-                //_mediaInfo.Option("Cover_Data", "base64");
-                //---------------------//
-
-                _mediaInfo.Open(path);
-
-            }
-            catch (Exception)
-            {
-                _mediaInfo?.Dispose();
-                _mediaInfo = null;
-            }
-
-            context.TitlebarOverlap = true;
-
-            if (_mediaInfo == null ||
-                !string.IsNullOrWhiteSpace(_mediaInfo.Get(StreamKind.General, 0, "VideoCount"))) // video
-            {
-                int.TryParse(_mediaInfo?.Get(StreamKind.Video, 0, "Width"), out var width);
-                int.TryParse(_mediaInfo?.Get(StreamKind.Video, 0, "Height"), out var height);
-                double.TryParse(_mediaInfo?.Get(StreamKind.Video, 0, "Rotation"), out var rotation);
+                int.TryParse(_mediaInfo.Get(StreamKind.Video, 0, "Width"), out var width);
+                int.TryParse(_mediaInfo.Get(StreamKind.Video, 0, "Height"), out var height);
+                double.TryParse(_mediaInfo.Get(StreamKind.Video, 0, "Rotation"), out var rotation);
 
                 // Correct rotation: on some machine the value "90" becomes "90000" by some reason
                 if (rotation > 360)
@@ -122,6 +116,7 @@ namespace QuickLook.Plugin.VideoViewer
                 context.TitlebarBlurVisibility = false;
                 context.TitlebarColourVisibility = false;
             }
+            context.TitlebarOverlap = true;
         }
 
         public void View(string path, ContextObject context)
@@ -139,11 +134,6 @@ namespace QuickLook.Plugin.VideoViewer
         {
             _vp?.Dispose();
             _vp = null;
-
-            _mediaInfo?.Dispose();
-            _mediaInfo = null;
-
-            _context = null;
         }
     }
 }

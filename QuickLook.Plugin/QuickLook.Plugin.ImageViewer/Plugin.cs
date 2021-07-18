@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using ImageMagick;
 using QuickLook.Common.Helpers;
 using QuickLook.Common.Plugin;
 using QuickLook.Plugin.ImageViewer.AnimatedImage.Providers;
@@ -27,17 +28,28 @@ namespace QuickLook.Plugin.ImageViewer
 {
     public class Plugin : IViewer
     {
-        private static readonly HashSet<string> Formats = new HashSet<string>(new[]
+        private static readonly HashSet<string> WellKnownImageExtensions = new HashSet<string>(new[]
         {
-            // camera raw ,add dds - add by gh
-            ".apng", ".ari", ".arw", ".avif", ".bay", ".crw", ".cr2", ".cr3", ".cap", ".dcs", ".dcr", ".dng", ".drf", ".eip", ".erf", ".exr",".fff",
-            ".iiq", ".k25", ".kdc", ".mdc", ".mef", ".mos", ".mrw", ".nef", ".nrw", ".obm", ".orf", ".pef", ".ptx",
-            ".pxn", ".r3d", ".raf", ".raw", ".rwl", ".rw2", ".rwz", ".sr2", ".srf", ".srw", ".x3f", ".dds",
-            // normal
-            ".bmp", ".hdr", ".heic", ".heif", ".ico", ".icon", ".jpg", ".jpeg", ".jfif", ".psd", ".wdp", ".tif", ".tiff", ".tga",
-            ".webp", ".pbm", ".pgm", ".ppm", ".pnm", ".svg", ".emf", ".wmf",
-            // animated
-            ".png", ".apng", ".gif"
+            ".apng", ".ari", ".arw", ".avif",
+            ".svg", ".tga", ".tif", ".tiff", ".webp", ".wmf", ".bay", ".bmp",
+            ".cap", ".cr2", ".cr3", ".crw",
+            ".dcr", ".dcs", ".dng", ".drf",
+            ".eip", ".emf", ".erf", ".exr",
+            ".fff",
+            ".gif",
+            ".hdr", ".heic", ".heif",
+            ".ico", ".icon", ".iiq",
+            ".jfif", ".jp2", ".jpeg", ".jpg", ".jxl",
+            ".k25", ".kdc",
+            ".mdc", ".mef", ".mos", ".mrw",
+            ".nef", ".nrw",
+            ".obm", ".orf",
+            ".pbm", ".pef", ".pgm", ".png", ".pnm", ".ppm", ".psd", ".ptx", ".pxn",
+            ".r3d", ".raf", ".raw", ".rw2", ".rwl", ".rwz",
+            ".sr2", ".srf", ".srw", ".svg",
+            ".tga", ".tif", ".tiff",
+            ".wdp", ".webp", ".wmf",
+            ".x3f"
         });
         private ImagePanel _ip;
         private MetaProvider _meta;
@@ -59,10 +71,29 @@ namespace QuickLook.Plugin.ImageViewer
                 new KeyValuePair<string[], Type>(new[] {"*"},
                     typeof(ImageMagickProvider)));
         }
+        private bool IsWellKnownImageExtension(string path)
+        {
+            return WellKnownImageExtensions.Contains(Path.GetExtension(path.ToLower()));
+        }
+
+        private bool IsImageMagickSupported(string path)
+        {
+            try
+            {
+                return new MagickImageInfo(path).Format != MagickFormat.Unknown;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public bool CanHandle(string path)
         {
-            return !Directory.Exists(path) && Formats.Contains(Path.GetExtension(path.ToLower()));
+            // Disabled due mishandling text file types e.g., "*.config".
+            // Only check extension for well known image and animated image types.
+            // For other image formats, let ImageMagick try to detect by file content.
+            return !Directory.Exists(path) && (IsWellKnownImageExtension(path)); // || IsImageMagickSupported(path));
         }
 
         public void Prepare(string path, ContextObject context)

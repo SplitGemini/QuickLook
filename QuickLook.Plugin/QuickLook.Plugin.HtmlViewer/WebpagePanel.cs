@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Reflection;
 using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -92,7 +93,8 @@ namespace QuickLook.Plugin.HtmlViewer
         {
             var button = new Button
             {
-                Content = TranslationHelper.Get("WEBVIEW2_NOT_AVAILABLE"),
+                Content = Content = TranslationHelper.Get("WEBVIEW2_NOT_AVAILABLE",
+                    domain: Assembly.GetExecutingAssembly().GetName().Name),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Padding = new Thickness(20, 6, 20, 6)
